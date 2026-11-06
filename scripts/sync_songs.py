@@ -136,12 +136,14 @@ def main():
         stats["checked"] += 1
         on_ia = set(originals)
         if ch.get("hidden"):   # a new station waiting for its upload: switch it on once (nearly) all its songs are there
-            have_n = sum(1 for t in ch["tracks"] if t["f"] in on_ia)
-            if ch["tracks"] and have_n >= len(ch["tracks"]) - MAX_REMOVE:
-                del ch["hidden"]; changed = True
-                print(f"{ch['name']}: uploaded ({have_n}/{len(ch['tracks'])} songs) - now on air")
+            # either the songs are already listed (tracks), or only a count is known ("expect") and the songs get added below
+            expect = len(ch["tracks"]) or ch.get("expect", 0)
+            have_n = sum(1 for t in ch["tracks"] if t["f"] in on_ia) if ch["tracks"] else len(on_ia)
+            if expect and have_n >= expect - MAX_REMOVE:
+                del ch["hidden"]; ch.pop("expect", None); changed = True
+                print(f"{ch['name']}: uploaded ({have_n}/{expect} songs) - now on air")
             else:
-                print(f"{ch['name']}: still uploading ({have_n}/{len(ch['tracks'])}), staying hidden")
+                print(f"{ch['name']}: still uploading ({have_n}/{expect}), staying hidden")
                 continue
         titles = {x[6:].strip().lower() for x in block if x.startswith("title:")}
         is_blocked = lambda name: f"{ch['ia']}/{name}" in block or nice_title(name).lower() in titles

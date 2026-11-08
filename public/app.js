@@ -71,7 +71,6 @@ async function init() {
     tracks: c.tracks.map((t, i) => ({ ...t, ia: c.ia, coll: c.name, slug: c.slug, cover: `/covers/${c.slug}/${t.c ?? i}.webp` })),
   }));
   all = collections.flatMap((c) => c.tracks).sort((a, b) => a.t.localeCompare(b.t));
-  $("count").textContent = `Every one of its ${all.length.toLocaleString()} songs`;
   const h = decodeURIComponent(location.hash.slice(1));
   if (collections.some((c) => c.slug === h)) current = h;
   // links from Alec Penn Radio arrive as ?q=<song title> to show that song straight away

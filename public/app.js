@@ -1,4 +1,4 @@
-// Eden's Gate — a free music library. Songs live on the Internet Archive;
+// Eden's Gate — a vault of free creations from Alec Penn (music + 3D models). Songs live on the Internet Archive;
 // this page just lists them, plays them and hands them over.
 const IA = "https://archive.org/download";
 const $ = (id) => document.getElementById(id);

@@ -280,3 +280,6 @@ body { background-image: radial-gradient(ellipse at 50% 42%, rgba(62, 111, 86, .
 @media (max-width:760px) { .library { gap: 24px; margin-top: 48px; } .library-label { padding-left: 16px; } .beds button { padding: 8px 16px; } .song { padding: 12px 5px; } .terms { margin-inline: 16px; padding: 24px; } }
 @media (prefers-reduced-motion:reduce) { .search input, .beds button, .song { transition: none; } }
 @media (min-width: 761px) { .stage.has3d.is-open .enter { left: calc(50% + 230px); bottom: 12%; } }
+
+.also { margin: -6px 0 18px; font-family: var(--mono); font-size: 14px; letter-spacing: .03em; }
+.also a { text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }

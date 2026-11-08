@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free 3D Models — The Open Asset Forge · Eden's Gate</title>
+<meta name="description" content="Free 3D models from The Open Asset Forge: GLB for web and game engines plus the original Blender files. Public domain (CC0): use them for anything, no credit needed.">
+<meta property="og:title" content="Free 3D Models · Eden's Gate">
+<meta property="og:description" content="Thousands of free 3D models. GLB + Blender. Public domain (CC0): use them for anything.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://edensgate.art/models/">
+<meta property="og:site_name" content="Eden's Gate">
+<meta property="og:image" content="https://edensgate.art/share.jpg?v=2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#12302c">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem("egMode");if(!m){var h=new Date().getHours();m=(h>=6&&h<18)?"day":"night"}document.documentElement.dataset.theme=m}catch(e){document.documentElement.dataset.theme="night"}</script>
+<link rel="stylesheet" href="/models/models.css?v=1">
+</head>
+<body>
+<a class="skip" href="#grid">Skip to the models</a>
+<header class="top">
+  <a class="back" href="/">← Eden's Gate</a>
+  <button id="mode" class="mode" type="button" aria-label="Switch day and night">☾</button>
+</header>
+
+<section class="hero">
+  <p class="eyebrow"><span aria-hidden="true">✦</span> The Open Asset Forge <span aria-hidden="true">✦</span></p>
+  <h1>Free 3D Models</h1>
+  <p class="lede">Made to be given away.</p>
+  <p class="about"><span id="count">Every model</span> here is free to download and use for anything: games, films, renders, apps, school, work. Each one comes as a <b>GLB</b> for the web and game engines (Unity, Unreal, Godot) and as its original <b>Blender</b> file. No sign-up. No credit required.</p>
+  <label class="search">
+    <span class="visually-hidden">Search models</span>
+    <input id="q" type="search" placeholder="Search: chair, kettle, lamp…" autocomplete="off">
+  </label>
+</section>
+
+<main>
+  <nav class="cats" aria-label="Categories"><ul id="cats"></ul></nav>
+  <p id="status" class="status" aria-live="polite"></p>
+  <ol id="grid" class="grid"></ol>
+  <div id="more" class="more" aria-hidden="true"></div>
+</main>
+
+<section class="terms">
+  <h2>What you can do with them</h2>
+  <p>All models in The Open Asset Forge are dedicated to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a> by A. Penn &amp; Co. Use them in commercial projects, modify them, sell what you make with them. You don't need permission and you don't need to give credit, though a mention is always welcome.</p>
+  <p>Hosted for free by the <a href="https://archive.org/search?query=identifier%3Aopenassetforge-*">Internet Archive</a>. Want music too? <a href="/">Eden's Gate has thousands of free songs.</a></p>
+</section>
+
+<footer class="foot">
+  <span>Eden's Gate · The Open Asset Forge</span>
+  <a href="https://alecpennradio.com">Listen live on Alec Penn Radio</a>
+</footer>
+
+<dialog id="view" class="view" aria-labelledby="v-name">
+  <div class="v-stage">
+    <img id="v-img" alt="">
+    <div id="v-3d" class="v-3d" hidden></div>
+    <button id="v-spin" class="v-spin" type="button">View in 3D</button>
+  </div>
+  <div class="v-info">
+    <p id="v-cat" class="v-cat"></p>
+    <h2 id="v-name"></h2>
+    <p id="v-id" class="v-id"></p>
+    <div class="v-dl">
+      <a id="v-glb" class="btn" href="#" rel="noopener">Download GLB <small id="v-glb-s"></small></a>
+      <a id="v-blend" class="btn ghost" href="#" rel="noopener">Blender file <small id="v-blend-s"></small></a>
+    </div>
+    <p class="v-note">GLB works in Unity, Unreal, Godot, three.js, Blender and most 3D apps. Public domain (CC0).</p>
+    <p class="v-share"><button id="v-copy" type="button" class="link">Copy link to this model</button></p>
+  </div>
+  <button id="v-close" class="v-close" type="button" aria-label="Close">✕</button>
+</dialog>
+
+<script src="/models/models.js?v=1" type="module"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

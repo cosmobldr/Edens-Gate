@@ -71,6 +71,7 @@ async function init() {
     tracks: c.tracks.map((t, i) => ({ ...t, ia: c.ia, coll: c.name, slug: c.slug, cover: `/covers/${c.slug}/${t.c ?? i}.webp` })),
   }));
   all = collections.flatMap((c) => c.tracks).sort((a, b) => a.t.localeCompare(b.t));
+  $("room-songs").textContent = `${all.length.toLocaleString()} free songs to stream and download`;
   const h = decodeURIComponent(location.hash.slice(1));
   if (collections.some((c) => c.slug === h)) current = h;
   // links from Alec Penn Radio arrive as ?q=<song title> to show that song straight away
@@ -80,14 +81,31 @@ async function init() {
   gate?.setBeds(bedsFor3d());
 }
 
+// the 3D models live on their own page (/models/); the sidebar and the intro point there
+let models = null;
+fetch("/models.json").then((r) => r.json()).then((d) => {
+  models = d;
+  const n = d.models.length;
+  $("room-models").textContent = n ? `${n.toLocaleString()} free models · GLB + Blender` : "Free GLB + Blender files · first models coming soon";
+  if (collections.length) renderBeds();
+}).catch(() => {});
+
 function renderBeds() {
   const genres = collections.filter((c) => !c.separate), series = collections.filter((c) => c.separate);
   const item = (slug, name, n) =>
     `<li><button data-slug="${slug}" aria-current="${current === slug && !query}"><span>${esc(name)}</span> <small>${n}</small></button></li>`;
+  const link = (href, name, n) => `<li><a class="bed-link" href="${href}"><span>${esc(name)}</span> <small>${n}</small></a></li>`;
+  const cats = models?.categories || [];
   $("beds").innerHTML =
+    `<li><a class="bed-models" href="/models/"><span class="bm-ico" aria-hidden="true">◆</span><span><b>3D Models</b><small>${models?.models.length ? models.models.length.toLocaleString() + " free · GLB + Blender" : "Free · first ones coming soon"}</small></span><span aria-hidden="true">→</span></a></li>` +
+    `<li class="sep sep-top">♪ Music</li>` +
     item("all", "All songs", all.length) +
     genres.map((c) => item(c.slug, c.name, c.tracks.length)).join("") +
-    (series.length ? `<li class="sep">Series</li>` + series.map((c) => item(c.slug, c.name, c.tracks.length)).join("") : "");
+    (series.length ? `<li class="sep">Series</li>` + series.map((c) => item(c.slug, c.name, c.tracks.length)).join("") : "") +
+    `<li class="sep sep-3d">◆ 3D Models</li>` +
+    (cats.length
+      ? link("/models/", "All models", models.models.length) + cats.map((c) => link(`/models/?c=${encodeURIComponent(c.name)}`, c.name, c.count)).join("")
+      : link("/models/", "Free 3D models", "soon"));
   $("beds").querySelectorAll("button").forEach((b) => b.onclick = () => {
     current = b.dataset.slug; query = ""; $("q").value = ""; shown = PAGE;
     history.replaceState(null, "", current === "all" ? location.pathname : "#" + current);

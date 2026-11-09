@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 
 export function addSakuraTrees(scene, loader) {
-  return new Promise((resolve, reject) => loader.load('/sakura-tree.glb', ({scene: source}) => {
+  return new Promise((resolve, reject) => loader.load('/sakura-tree-v2.glb', ({scene: source}) => {
     const bounds=new THREE.Box3().setFromObject(source), size=bounds.getSize(new THREE.Vector3());
     const scale=4.3/size.y;
     source.traverse(o => {

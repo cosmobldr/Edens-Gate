@@ -3,7 +3,7 @@
 // and the camera walks you up to the threshold. Falls back to the flat SVG gate
 // if WebGL isn't available.
 import * as THREE from "three";
-import { addSakuraTrees } from "./sakura.js?v=20261028e";
+import { addSakuraTrees } from "./sakura.js?v=20261109b";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
@@ -427,7 +427,7 @@ export function startGate(canvas, { onOpen, onPick, mode = "night" } = {}) {
   let blinkAt = 3, flickAt = 5;
   // Tommy (the real one: black cat, wizard hat, gold APR pendant) takes the cat's seat in the gateway
   let tommy = null, walkMixer = null, walkAction = null, walkDuration = 0, catModelScale = 1;
-  gl.load("/tommy-walk-v7.glb", (g) => {
+  gl.load("/tommy-walk-v8.glb", (g) => {
     if (dead) return;
     const t = g.scene;
     // The source cat faces +X; orient him toward +Z for the garden's movement code.

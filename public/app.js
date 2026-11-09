@@ -7,6 +7,19 @@ const fmt = (s) => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 
 const PAGE = 120;
 
 let collections = [], all = [], current = "all", query = "", shown = PAGE, playing = null;
+// favorites: saved on this device only (no account). Each one is "collection/file".
+const favKey = (t) => `${t.slug}/${t.f}`;
+let favs = new Set();
+try { favs = new Set(JSON.parse(localStorage.getItem("egFavs") || "[]")); } catch (e) {}
+const saveFavs = () => { try { localStorage.setItem("egFavs", JSON.stringify([...favs])); } catch (e) {} };
+const favList = () => all.filter((t) => favs.has(favKey(t)));
+function toggleFav(t) {
+  const k = favKey(t); favs.has(k) ? favs.delete(k) : favs.add(k); saveFavs(); renderBeds(); renderShelf();
+}
+function surprise() {
+  const songs = list().filter((t) => t !== playing); if (songs.length) play(songs[Math.floor(Math.random() * songs.length)]);
+}
+const SURPRISE = `<button class="zip ghost" id="surprise" type="button">Surprise me</button>`;
 
 const songUrl = (t) => `${IA}/${t.ia}/${encodeURIComponent(t.f)}`;
 const zipUrl = (c) => `https://archive.org/compress/${c.ia}/formats=VBR%20MP3&file=/${encodeURIComponent(c.ia)}.zip`;
@@ -32,7 +45,7 @@ async function startEntrance() {
   const stage = $("stage");
   if (webgl()) {
     try {
-      const { startGate } = await import("/gate3d.js?v=20261028h");
+      const { startGate } = await import("/gate3d.js?v=20261109b");
       stage.classList.add("has3d");
       gate = startGate($("gate3d"), { mode: currentMode(), onOpen: () => stage.classList.add("is-open"), onPick: pickBed });
       await Promise.race([gate.ready, new Promise((_, reject) => setTimeout(() => reject(new Error("3D models timed out")), 20000))]);
@@ -73,7 +86,7 @@ async function init() {
   all = collections.flatMap((c) => c.tracks).sort((a, b) => a.t.localeCompare(b.t));
   $("room-songs").textContent = `${all.length.toLocaleString()} free songs to stream and download`;
   const h = decodeURIComponent(location.hash.slice(1));
-  if (collections.some((c) => c.slug === h)) current = h;
+  if (collections.some((c) => c.slug === h) || h === "favs") current = h;
   // links from Alec Penn Radio arrive as ?q=<song title> to show that song straight away
   const q = new URLSearchParams(location.search).get("q");
   if (q) { query = q.trim(); $("q").value = query; requestAnimationFrame(() => $("library").scrollIntoView({ behavior: "smooth" })); }
@@ -100,6 +113,7 @@ function renderBeds() {
     `<li><a class="bed-models" href="/models/"><span class="bm-ico" aria-hidden="true">◆</span><span><b>3D Models</b><small>${models?.models.length ? models.models.length.toLocaleString() + " free · GLB + Blender" : "Free · first ones coming soon"}</small></span><span aria-hidden="true">→</span></a></li>` +
     `<li class="sep sep-top">♪ Music</li>` +
     item("all", "All songs", all.length) +
+    item("favs", "♥ My favorites", favList().length) +
     genres.map((c) => item(c.slug, c.name, c.tracks.length)).join("") +
     (series.length ? `<li class="sep">Series</li>` + series.map((c) => item(c.slug, c.name, c.tracks.length)).join("") : "") +
     `<li class="sep sep-3d">◆ 3D Models</li>` +
@@ -120,6 +134,7 @@ function list() {
     return all.filter((t) => t.t.toLowerCase().includes(q));
   }
   if (current === "all") return all;
+  if (current === "favs") return favList();
   return collections.find((c) => c.slug === current).tracks;
 }
 
@@ -132,13 +147,17 @@ function renderShelf() {
   } else if (current === "all") {
     $("shelf-head").style.gridTemplateColumns = "0 1fr";
     $("shelf-head").innerHTML = `<div></div><div><h2>All songs</h2>
-      <p>${all.length.toLocaleString()} songs across ${collections.length} collections, A to Z. Pick a collection to download it in one go.</p></div>`;
+      <p>${all.length.toLocaleString()} songs across ${collections.length} collections, A to Z. Pick a collection to download it in one go.</p>${SURPRISE}</div>`;
+  } else if (current === "favs") {
+    $("shelf-head").style.gridTemplateColumns = "0 1fr";
+    $("shelf-head").innerHTML = `<div></div><div><h2>My favorites</h2>
+      <p>${songs.length ? `${songs.length} song${songs.length === 1 ? "" : "s"} you've hearted. Saved on this device, no account needed.` : "Tap the ♡ next to any song to keep it here. Saved on this device, no account needed."}</p>${songs.length > 1 ? SURPRISE : ""}</div>`;
   } else {
     $("shelf-head").style.gridTemplateColumns = "";
     const mins = Math.round(c.tracks.reduce((a, t) => a + t.s, 0) / 60);
     $("shelf-head").innerHTML = `<img src="/genres/${c.slug}.webp" alt="" onerror="this.style.visibility='hidden'"><div><h2>${esc(c.name)}</h2>
       <p>${c.tracks.length} songs, about ${mins >= 90 ? Math.round(mins / 60) + " hours" : mins + " minutes"} of music.</p>
-      <a class="zip" href="${zipUrl(c)}">Download all ${c.tracks.length} as a zip</a></div>`;
+      <a class="zip" href="${zipUrl(c)}">Download all ${c.tracks.length} as a zip</a> ${SURPRISE}</div>`;
   }
   const page = songs.slice(0, shown);
   $("songs").innerHTML = songs.length ? page.map((t, i) => `
@@ -146,14 +165,16 @@ function renderShelf() {
       <img src="${t.cover}" alt="" loading="lazy" width="44" height="44">
       <div><div class="t">${esc(t.t)}</div>${current === "all" || query ? `<div class="c">${esc(t.coll)}</div>` : ""}</div>
       <span class="d">${fmt(t.s)}</span>
-      <span class="acts"><button data-act="play" data-on="${playing === t && !audio.paused}" aria-label="${playing === t && !audio.paused ? "Pause" : "Play"} ${esc(t.t)}">${playing === t && !audio.paused ? "Pause" : "Play"}</button><button data-act="dl" aria-label="Download ${esc(t.t)}">Download</button></span>
+      <span class="acts"><button data-act="fav" aria-pressed="${favs.has(favKey(t))}" aria-label="${favs.has(favKey(t)) ? "Remove" : "Add"} ${esc(t.t)} ${favs.has(favKey(t)) ? "from" : "to"} favorites">${favs.has(favKey(t)) ? "♥" : "♡"}</button><button data-act="play" data-on="${playing === t && !audio.paused}" aria-label="${playing === t && !audio.paused ? "Pause" : "Play"} ${esc(t.t)}">${playing === t && !audio.paused ? "Pause" : "Play"}</button><button data-act="dl" aria-label="Download ${esc(t.t)}">Download</button></span>
     </li>`).join("") + (songs.length > shown ? `<li class="more"><button class="zip" id="more">Show ${Math.min(PAGE, songs.length - shown)} more</button></li>` : "")
-    : `<li class="empty">No songs called that yet. Try a shorter word, or browse a collection.</li>`;
+    : current === "favs" && !query ? "" : `<li class="empty">No songs called that yet. Try a shorter word, or browse a collection.</li>`;
   $("songs").querySelectorAll(".song").forEach((li) => {
     const t = page[+li.dataset.i];
+    li.querySelector('[data-act="fav"]').onclick = () => toggleFav(t);
     li.querySelector('[data-act="play"]').onclick = () => play(t);
     li.querySelector('[data-act="dl"]').onclick = (e) => download(t, e.currentTarget);
   });
+  const sp = $("surprise"); if (sp) sp.onclick = surprise;
   const more = $("more"); if (more) more.onclick = () => { shown += PAGE; renderShelf(); };
 }
 

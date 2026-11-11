@@ -1,7 +1,7 @@
 // Free 3D models (The Open Asset Forge). Data: /models.json, built from archive.org by scripts/sync_models.py
 const $ = (id) => document.getElementById(id);
 const PAGE = 60;
-const MV = "https://cdn.jsdelivr.net/npm/@google/model-viewer@3.4.0/dist/model-viewer.min.js";
+const MV = "/tools/vendor/model-viewer.min.js";
 const dl = (m, ext) => `https://archive.org/download/${m.i}/${encodeURIComponent(m.f + ext)}`;
 const mb = (b) => (b >= 1e6 ? (b / 1e6).toFixed(b >= 1e7 ? 0 : 1) + " MB" : Math.max(1, Math.round(b / 1e3)) + " KB");
 const norm = (s) => s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9 ]/g, " ");
@@ -102,6 +102,7 @@ $("v-spin").onclick = async () => {
   const m = current; if (!m) return;
   $("v-spin").textContent = m.g > 15e6 ? `Loading (${mb(m.g)})…` : "Loading…";
   try {
+    self.ModelViewerElement ||= { meshoptDecoderLocation: "/tools/vendor/meshopt_decoder.js" };
     mvLoading ||= import(MV);
     await mvLoading;
   } catch (e) { $("v-spin").textContent = "3D view unavailable"; return; }

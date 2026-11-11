@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Audio Converter — WAV to MP3, MP3 to WAV, no upload · Eden's Gate</title>
+<meta name="description" content="Convert WAV to MP3, MP3 to WAV, or pull the audio out of a video. Free, in your browser, no upload, no sign-up.">
+<meta property="og:title" content="Free Audio Converter · Eden's Gate">
+<meta property="og:description" content="Convert WAV to MP3, MP3 to WAV, or pull the audio out of a video. Free, in your browser, no upload, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://edensgate.art/tools/convert/">
+<meta property="og:site_name" content="Eden's Gate">
+<meta property="og:image" content="https://edensgate.art/share.jpg?v=2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#12302c">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem("egMode");if(!m){var h=new Date().getHours();m=(h>=6&&h<18)?"day":"night"}document.documentElement.dataset.theme=m}catch(e){document.documentElement.dataset.theme="night"}</script>
+<link rel="stylesheet" href="/models/models.css?v=1">
+<link rel="stylesheet" href="/tools/tools.css?v=3">
+</head>
+<body>
+<header class="top"><a class="back" href="/tools/">← All tools</a><button id="mode" class="mode" type="button" aria-label="Switch day and night">☾</button></header>
+<section class="hero">
+  <p class="eyebrow"><span aria-hidden="true">✦</span> The Workshop <span aria-hidden="true">✦</span></p>
+  <h1>Audio Converter</h1>
+  <p class="about">Turn WAV into MP3, MP3 into WAV, or pull the sound out of a video. Drop in one file or a whole stack. <b>Nothing is uploaded</b>: it all happens on your device.</p>
+</section>
+<main class="bench">
+  <fieldset class="opts top-opts">
+    <legend>Turn them into</legend>
+    <div class="quick" role="group" aria-label="Output format" id="fmts">
+      <button type="button" class="chip" data-f="mp3-192" aria-pressed="true">MP3 · 192 kbps</button>
+      <button type="button" class="chip" data-f="mp3-320" aria-pressed="false">MP3 · 320 kbps (best)</button>
+      <button type="button" class="chip" data-f="mp3-128" aria-pressed="false">MP3 · 128 kbps (smallest)</button>
+      <button type="button" class="chip" data-f="wav" aria-pressed="false">WAV</button>
+    </div>
+    <label class="check"><input id="mono" type="checkbox"> Make it mono <small>(one channel: half the size, good for voice and podcasts)</small></label>
+  </fieldset>
+  <label id="drop" class="drop" tabindex="0">
+    <input id="file" type="file" multiple accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.aac,.mp4,.mov,.webm" class="visually-hidden">
+    <span class="drop-big">Drop audio or video files here</span>
+    <span class="drop-small">or tap to choose · MP3, WAV, M4A, FLAC, OGG, MP4, MOV, WEBM</span>
+  </label>
+  <ul id="jobs" class="jobs"></ul>
+
+  <section class="terms">
+    <h2>Good to know</h2>
+    <p>Converting an MP3 to WAV makes it easier to edit, but it can't add back quality the MP3 already lost. For the best result, keep your original WAV and make MP3s from it.</p>
+    <p>Very long files (over an hour) can take a minute and need plenty of memory. Phones may struggle with those; a computer handles them fine.</p>
+  </section>
+</main>
+<footer class="foot"><span>Eden's Gate · The Workshop</span><a href="/tools/">All free tools</a><a href="/models/">Free 3D models</a><a href="/">Free music</a></footer>
+<script type="module" src="/tools/convert/page.js?v=1"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

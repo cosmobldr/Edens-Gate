@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Start Your Own Free Radio Station — free kit & guide · Eden's Gate</title>
+<meta name="description" content="Run your own 24/7 internet radio station for free: one file, free hosting, no server, no monthly bill. Plain-English guide and starter kit.">
+<meta property="og:title" content="Start Your Own Free Radio Station · Eden's Gate">
+<meta property="og:description" content="Run your own 24/7 internet radio station for free: one file, free hosting, no server, no monthly bill. Plain-English guide and starter kit.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://edensgate.art/tools/radio/">
+<meta property="og:site_name" content="Eden's Gate">
+<meta property="og:image" content="https://edensgate.art/share.jpg?v=2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#12302c">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem("egMode");if(!m){var h=new Date().getHours();m=(h>=6&&h<18)?"day":"night"}document.documentElement.dataset.theme=m}catch(e){document.documentElement.dataset.theme="night"}</script>
+<link rel="stylesheet" href="/models/models.css?v=1">
+<link rel="stylesheet" href="/tools/tools.css?v=3">
+</head>
+<body>
+<header class="top"><a class="back" href="/tools/">← All tools</a><button id="mode" class="mode" type="button" aria-label="Switch day and night">☾</button></header>
+<section class="hero">
+  <p class="eyebrow"><span aria-hidden="true">✦</span> The Workshop <span aria-hidden="true">✦</span></p>
+  <h1>Start Your Own Free Radio</h1>
+  <p class="about">The same trick that runs Alec Penn Radio, boiled down to one file. Everyone who tunes in hears the same song at the same moment, like real radio. <b>No server. No monthly bill. No account with us.</b></p>
+  <p class="go center"><a class="btn" href="/tools/radio/demo.html" target="_blank" rel="noopener">▶ Hear the demo station</a><a class="btn ghost" href="/tools/radio/my-radio.html" download="my-radio.html">Download the kit</a></p>
+</section>
+<main class="bench guide">
+  <ol class="steps">
+    <li>
+      <h2>Put your songs online, free</h2>
+      <p>Make a free account at <a href="https://archive.org" rel="noopener">the Internet Archive</a> (archive.org), then press <b>Upload</b> and drop in your MP3s. When it asks for a page address (the "identifier"), pick something short with no spaces, like <b>yourname-radio</b>. Wait until the upload has finished processing.</p>
+      <p>Each song then lives at an address like <b>https://archive.org/download/yourname-radio/Song Name.mp3</b>. Only upload music you made or have the rights to.</p>
+    </li>
+    <li>
+      <h2>Make your song list</h2>
+      <p>Type your Archive identifier, then drop the same MP3s here. This reads each song's length on your device and writes the list for you.</p>
+      <label class="field">Archive identifier <input id="ia" placeholder="yourname-radio" autocomplete="off" spellcheck="false"></label>
+      <label id="drop" class="drop drop-mini" tabindex="0"><input id="file" type="file" multiple accept="audio/*,.mp3,.m4a,.ogg,.wav" class="visually-hidden"><span class="drop-small">Drop your songs here or tap to choose them</span></label>
+      <div id="out-wrap" hidden>
+        <textarea id="out" class="code" rows="8" readonly spellcheck="false"></textarea>
+        <div class="go"><button id="copy" class="btn" type="button">Copy song list</button><span id="count" class="status"></span></div>
+      </div>
+    </li>
+    <li>
+      <h2>Fill in the kit</h2>
+      <p><a href="/tools/radio/my-radio.html" download="my-radio.html">Download the kit</a> and open it in Notepad (Windows) or TextEdit (Mac). Near the top, change the <b>name</b>, <b>tagline</b> and <b>colour</b>. Replace the example line under <b>SONGS</b> with the list you just copied. Save.</p>
+      <p>Double-click the file to try it in your browser before it goes online.</p>
+    </li>
+    <li>
+      <h2>Put it online, free</h2>
+      <p>Rename the file to <b>index.html</b>. Then, using <a href="https://github.com" rel="noopener">GitHub</a> (free):</p>
+      <ol class="sub">
+        <li>Make a free account and create a new <b>public</b> repository, for example <b>my-radio</b>.</li>
+        <li>Press <b>Add file → Upload files</b>, drop in index.html, and press <b>Commit changes</b>.</li>
+        <li>Open <b>Settings → Pages</b>. Under "Branch", pick <b>main</b> and press <b>Save</b>.</li>
+        <li>In a minute or two your station is live at <b>https://your-username.github.io/my-radio/</b>. Share that link.</li>
+      </ol>
+      <p>Want your own address, like <b>myradio.com</b>? Domains cost roughly $10–15 a year, and GitHub Pages lets you connect one for free under the same Settings → Pages screen.</p>
+    </li>
+    <li>
+      <h2>Add songs later</h2>
+      <p>Upload the new songs to the same Archive item, run them through the song list maker above, add the new lines to your file, and upload it again. Listeners get the new songs the next time they open the page.</p>
+    </li>
+  </ol>
+  <section class="terms">
+    <h2>How the "live" part works</h2>
+    <p>There's no broadcasting computer. The kit shuffles your songs into one fixed loop (the same order on every device) and uses the clock to work out where in that loop the station is right now. Two people opening the page at the same second land on the same song at the same spot. It costs nothing to run, and it never goes down because a computer fell asleep.</p>
+    <p>The kit is yours to change, sell or share. No credit needed.</p>
+  </section>
+</main>
+<footer class="foot"><span>Eden's Gate · The Workshop</span><a href="/tools/">All free tools</a><a href="/models/">Free 3D models</a><a href="/">Free music</a></footer>
+<script type="module" src="/tools/radio/page.js?v=1"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

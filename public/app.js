@@ -111,6 +111,7 @@ function renderBeds() {
   const cats = models?.categories || [];
   $("beds").innerHTML =
     `<li><a class="bed-models" href="/models/"><span class="bm-ico" aria-hidden="true">◆</span><span><b>3D Models</b><small>${models?.models.length ? models.models.length.toLocaleString() + " free · GLB + Blender" : "Free · first ones coming soon"}</small></span><span aria-hidden="true">→</span></a></li>` +
+    `<li><a class="bed-models bed-tools" href="/tools/"><span class="bm-ico" aria-hidden="true">✂</span><span><b>Free Tools</b><small>Trim · covers · convert · radio kit</small></span><span aria-hidden="true">→</span></a></li>` +
     `<li class="sep sep-top">♪ Music</li>` +
     item("all", "All songs", all.length) +
     item("favs", "♥ My favorites", favList().length) +
@@ -186,6 +187,7 @@ function play(t) {
   audio.src = songUrl(t); audio.play().catch(() => {});
   $("player").hidden = false;
   $("p-cover").src = t.cover; $("p-title").textContent = t.t; $("p-coll").textContent = t.coll;
+  $("p-trim").href = `/tools/trim/?ia=${encodeURIComponent(t.ia)}&f=${encodeURIComponent(t.f)}&t=${encodeURIComponent(t.t)}`;
   if ("mediaSession" in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title: t.t, artist: "Alec Penn Radio", album: t.coll, artwork: [{ src: t.cover, sizes: "320x320", type: "image/webp" }] });
   renderShelf();
 }

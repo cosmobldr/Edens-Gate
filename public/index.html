@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <script>document.documentElement.classList.add("js");try{var m=localStorage.getItem("egMode");if(!m){var h=new Date().getHours();m=(h>=6&&h<18)?"day":"night"}document.documentElement.dataset.theme=m}catch(e){document.documentElement.dataset.theme="night"}</script>
-<link rel="stylesheet" href="/styles.css?v=20261109b">
+<link rel="stylesheet" href="/styles.css?v=20261111">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 </head>
 <body>
@@ -103,6 +103,11 @@
         <span class="room-txt"><b>3D Models</b><small id="room-models">Free GLB + Blender files</small></span>
         <span class="room-go" aria-hidden="true">→</span>
       </a>
+      <a class="room" href="/tools/">
+        <span class="room-ico" aria-hidden="true">✂</span>
+        <span class="room-txt"><b>Free Tools</b><small>Trim songs, make covers, shrink 3D</small></span>
+        <span class="room-go" aria-hidden="true">→</span>
+      </a>
     </nav>
     <label class="search">
       <span class="visually-hidden">Search songs</span>
@@ -132,6 +137,7 @@
   <span>Eden's Gate</span>
   <small>Tommy’s cat model adapted from <a href="https://sketchfab.com/3d-models/medium-poly-cat-in-motion-3d-model-free-5c31c77904de4e458d434c167ea0f4bc">iRahulRajput</a>; sakura tree adapted from <a href="https://sketchfab.com/3d-models/sakura-tree-01-low-poly-model-147ae7d0d332456a99ec6195e9b0cd4f">Jogoss</a>. Both under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</small>
   <a href="/models/">Free 3D models</a>
+  <a href="/tools/">Free tools</a>
   <a href="https://alecpennradio.com">Listen live on Alec Penn Radio</a>
 </footer>
 
@@ -144,11 +150,12 @@
   <button id="p-toggle" class="p-btn" aria-label="Pause">❚❚</button>
   <input id="p-seek" class="p-seek" type="range" min="0" max="1000" value="0" aria-label="Position in song">
   <span id="p-time" class="p-time">0:00</span>
+  <a id="p-trim" class="p-dl p-trim" href="/tools/trim/" title="Cut a clip of this song" aria-label="Trim this song">✂<span class="p-lbl">&nbsp;Trim</span></a>
   <button id="p-dl" class="p-dl">Download</button>
 </div>
 <audio id="audio" preload="none"></audio>
 
-<script src="/app.js?v=20261109b" type="module"></script>
+<script src="/app.js?v=20261111" type="module"></script>
 <!-- Free visitor counts (Vercel Web Analytics): no cookies, no personal data -->
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>

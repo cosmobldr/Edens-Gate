@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Cover Art Maker — album covers & thumbnails · Eden's Gate</title>
+<meta name="description" content="Make album cover art (3000×3000), YouTube thumbnails and Story images in seconds. Free, in your browser, no watermark, no sign-up.">
+<meta property="og:title" content="Free Cover Art Maker · Eden's Gate">
+<meta property="og:description" content="Make album cover art (3000×3000), YouTube thumbnails and Story images in seconds. Free, in your browser, no watermark, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://edensgate.art/tools/cover/">
+<meta property="og:site_name" content="Eden's Gate">
+<meta property="og:image" content="https://edensgate.art/share.jpg?v=2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#12302c">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem("egMode");if(!m){var h=new Date().getHours();m=(h>=6&&h<18)?"day":"night"}document.documentElement.dataset.theme=m}catch(e){document.documentElement.dataset.theme="night"}</script>
+<link rel="stylesheet" href="/models/models.css?v=1">
+<link rel="stylesheet" href="/tools/tools.css?v=3">
+</head>
+<body>
+<header class="top"><a class="back" href="/tools/">← All tools</a><button id="mode" class="mode" type="button" aria-label="Switch day and night">☾</button></header>
+<section class="hero">
+  <p class="eyebrow"><span aria-hidden="true">✦</span> The Workshop <span aria-hidden="true">✦</span></p>
+  <h1>Cover Art Maker</h1>
+  <p class="about">Type your title, pick a look, download a cover. Sized for Spotify, Apple Music and YouTube. <b>No watermark. It's yours.</b></p>
+</section>
+<main class="bench cover-bench">
+  <div class="cover-grid">
+    <div class="cover-stage">
+      <canvas id="cv" width="1000" height="1000" aria-label="Cover preview"></canvas>
+      <div class="go">
+        <button id="shuffle" class="btn ghost" type="button">⟳ Shuffle colours</button>
+        <button id="save" class="btn" type="button">Download</button>
+      </div>
+      <p id="status" class="status" aria-live="polite"></p>
+    </div>
+    <div class="cover-form">
+      <label class="field">Title <input id="title" value="Midnight Garden" maxlength="80" autocomplete="off"></label>
+      <label class="field">Artist <input id="artist" value="Your Name" maxlength="60" autocomplete="off"></label>
+      <div class="field"><span>Look</span><div class="quick" id="styles" role="group" aria-label="Look"></div></div>
+      <div class="field"><span>Size</span><div class="quick" id="sizes" role="group" aria-label="Size">
+        <button type="button" class="chip" data-w="3000" data-h="3000" aria-pressed="true">Album cover · 3000×3000</button>
+        <button type="button" class="chip" data-w="1280" data-h="720" aria-pressed="false">YouTube thumbnail</button>
+        <button type="button" class="chip" data-w="1080" data-h="1920" aria-pressed="false">Story / Short</button>
+      </div></div>
+      <div class="field"><span>Your own picture <small>(optional)</small></span>
+        <label class="drop drop-mini" id="drop" tabindex="0"><input id="file" type="file" accept="image/*" class="visually-hidden"><span class="drop-small" id="photo-label">Drop a photo here or tap to choose</span></label>
+        <button id="nophoto" class="link" type="button" hidden>Remove picture</button>
+      </div>
+    </div>
+  </div>
+  <section class="terms">
+    <h2>Good to know</h2>
+    <p>Album covers are made at 3000×3000, the size Spotify, Apple Music, YouTube Music and most distributors ask for. Only use photos you took yourself or have the rights to.</p>
+  </section>
+</main>
+<footer class="foot"><span>Eden's Gate · The Workshop</span><a href="/tools/">All free tools</a><a href="/models/">Free 3D models</a><a href="/">Free music</a></footer>
+<script type="module" src="/tools/cover/page.js?v=1"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

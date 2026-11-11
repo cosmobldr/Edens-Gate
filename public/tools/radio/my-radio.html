@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Radio</title>
+<!--
+  ============================================================
+   YOUR OWN FREE RADIO STATION  ·  starter kit from Eden's Gate
+   https://edensgate.art/tools/radio/
+  ============================================================
+   1. Change the three settings just below (name, tagline, colour).
+   2. Paste your song list where it says SONGS (the guide's
+      "song list maker" writes it for you).
+   3. Save, and put this one file online for free.
+  Everyone who opens the page hears the same song at the same moment,
+  like real radio. No server, no account, no monthly bill.
+  Free to use, change and share. No credit needed.
+-->
+<script>
+const STATION = {
+  name: "My Radio",
+  tagline: "Always on. Always free.",
+  colour: "#d4b25a",
+};
+
+// SONGS: one line per song: [ "web address of the MP3", "Song title", length in seconds ]
+const SONGS = [
+  ["https://archive.org/download/alecpennradio-lo-fi/YOUR-SONG.mp3", "Replace me with your first song", 180],
+];
+</script>
+<style>
+  :root { --c: #d4b25a; --bg: #101413; --ink: #f2efe6; --soft: #9aa39f; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { min-height: 100%; display: grid; place-items: center; padding: 24px 16px; text-align: center; }
+  .dial { width: min(320px, 70vw); aspect-ratio: 1; border-radius: 50%; border: 3px solid var(--c); display: grid; place-items: center; margin: 0 auto 28px; position: relative;
+    box-shadow: 0 0 60px color-mix(in srgb, var(--c) 25%, transparent); }
+  .dial::after { content: ""; position: absolute; inset: 14px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); }
+  button { all: unset; cursor: pointer; width: 46%; aspect-ratio: 1; border-radius: 50%; background: var(--c); color: var(--bg); display: grid; place-items: center;
+    font: 700 clamp(18px, 4vw, 24px) system-ui; letter-spacing: .08em; z-index: 1; transition: transform .15s; }
+  button:hover { transform: scale(1.04); } button:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+  h1 { margin: 0; font-size: clamp(30px, 7vw, 54px); letter-spacing: .02em; }
+  .tag { color: var(--soft); margin: 6px 0 26px; }
+  .live { display: inline-flex; gap: 8px; align-items: center; font: 600 12px ui-monospace, monospace; letter-spacing: .18em; color: var(--c); }
+  .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); animation: p 1.6s infinite; } @keyframes p { 50% { opacity: .25; } }
+  .now { font-size: clamp(20px, 4.5vw, 28px); margin: 10px 0 4px; min-height: 1.3em; }
+  .bar { width: min(420px, 86vw); height: 4px; background: #ffffff22; border-radius: 4px; margin: 16px auto 8px; overflow: hidden; } .bar b { display: block; height: 100%; width: 0; background: var(--c); }
+  .next { color: var(--soft); font-size: 15px; }
+  .vol { margin-top: 22px; accent-color: var(--c); width: 160px; }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <div class="dial"><button id="go" type="button" aria-label="Tune in">TUNE IN</button></div>
+    <h1 id="name"></h1>
+    <p class="tag" id="tag"></p>
+    <div class="live"><i></i> ON AIR</div>
+    <p class="now" id="now">&nbsp;</p>
+    <div class="bar"><b id="bar"></b></div>
+    <p class="next" id="next"></p>
+    <input class="vol" id="vol" type="range" min="0" max="100" value="80" aria-label="Volume">
+  </div>
+</main>
+<audio id="audio" preload="none"></audio>
+<script>
+// ---- the radio. You don't need to change anything below. ----
+const $ = (id) => document.getElementById(id);
+document.documentElement.style.setProperty("--c", STATION.colour);
+document.title = STATION.name; $("name").textContent = STATION.name; $("tag").textContent = STATION.tagline;
+const list = SONGS.filter((s) => s && s[0] && s[2] > 0).map(([url, title, secs]) => ({ url, title, secs: +secs }));
+
+// Shuffle once, the same way on every phone and computer (seeded by the station name), then loop forever.
+let seed = [...STATION.name].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7) || 1;
+const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+const total = list.reduce((a, s) => a + s.secs, 0);
+
+// Where is the station right now? Everyone's clock gives the same answer.
+function onAir(t = Date.now() / 1000) {
+  let pos = ((t % total) + total) % total;
+  for (let i = 0; i < list.length; i++) { if (pos < list[i].secs) return { i, song: list[i], offset: pos, left: list[i].secs - pos }; pos -= list[i].secs; }
+  return { i: 0, song: list[0], offset: 0, left: list[0].secs };
+}
+const audio = $("audio"); let on = false, cur = null;
+function show() {
+  const a = onAir(); $("now").textContent = a.song.title; $("next").textContent = list.length > 1 ? "Up next: " + list[(a.i + 1) % list.length].title : "";
+  $("bar").style.width = (a.offset / a.song.secs * 100).toFixed(2) + "%";
+}
+function tune() {
+  let a = onAir(); if (a.left < 2) a = onAir(Date.now() / 1000 + a.left + 0.1);
+  cur = a.song; audio.src = a.song.url;
+  audio.onloadedmetadata = () => { const off = onAir().offset; if (off > 1) audio.currentTime = off; };
+  audio.play().catch(() => {});
+  if ("mediaSession" in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title: a.song.title, artist: STATION.name });
+}
+audio.onended = () => on && tune();
+audio.onerror = () => { if (on) setTimeout(() => { const a = onAir(); if (a.song === cur) setTimeout(tune, (a.left + 0.5) * 1000); else tune(); }, 1000); };
+$("go").onclick = () => {
+  on = !on; $("go").textContent = on ? "STOP" : "TUNE IN"; $("go").setAttribute("aria-label", on ? "Stop" : "Tune in");
+  if (on) tune(); else audio.pause();
+};
+$("vol").oninput = (e) => (audio.volume = e.target.value / 100); audio.volume = 0.8;
+setInterval(show, 1000); show();
+</script>
+</body>
+</html>

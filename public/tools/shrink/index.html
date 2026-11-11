@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free 3D Model Shrinker (GLB compressor) — Eden's Gate</title>
+<meta name="description" content="Make GLB 3D models up to 10× smaller, free, right in your browser. No upload, no sign-up. Works for Unity, Unreal, Godot, three.js and Blender.">
+<meta property="og:title" content="Free 3D Model Shrinker (GLB compressor) · Eden's Gate">
+<meta property="og:description" content="Make GLB 3D models up to 10× smaller, free, right in your browser. No upload, no sign-up. Works for Unity, Unreal, Godot, three.js and Blender.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://edensgate.art/tools/shrink/">
+<meta property="og:site_name" content="Eden's Gate">
+<meta property="og:image" content="https://edensgate.art/share.jpg?v=2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#12302c">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem("egMode");if(!m){var h=new Date().getHours();m=(h>=6&&h<18)?"day":"night"}document.documentElement.dataset.theme=m}catch(e){document.documentElement.dataset.theme="night"}</script>
+<link rel="stylesheet" href="/models/models.css?v=1">
+<link rel="stylesheet" href="/tools/tools.css?v=3">
+</head>
+<body>
+<header class="top"><a class="back" href="/tools/">← All tools</a><button id="mode" class="mode" type="button" aria-label="Switch day and night">☾</button></header>
+<section class="hero">
+  <p class="eyebrow"><span aria-hidden="true">✦</span> The Workshop <span aria-hidden="true">✦</span></p>
+  <h1>3D Model Shrinker</h1>
+  <p class="about">Drop in a <b>.glb</b> file and get it back much smaller, looking the same. Smaller models load faster in games and on websites. It all happens on your device: <b>your file is never uploaded</b>.</p>
+</section>
+<main class="bench">
+  <label id="drop" class="drop" tabindex="0">
+    <input id="file" type="file" accept=".glb,model/gltf-binary" class="visually-hidden">
+    <span class="drop-big">Drop a .glb file here</span>
+    <span class="drop-small">or tap to choose one</span>
+  </label>
+
+  <section id="work" hidden>
+    <div class="views">
+      <figure><div id="v-before" class="stage"></div><figcaption>Original <b id="s-before"></b></figcaption></figure>
+      <figure><div id="v-after" class="stage"><p class="wait" id="wait">Pick your settings, then press Shrink.</p></div><figcaption>Shrunk <b id="s-after">—</b></figcaption></figure>
+    </div>
+    <p id="facts" class="facts"></p>
+    <fieldset class="opts">
+      <legend>Settings</legend>
+      <label>Largest picture size
+        <select id="tex">
+          <option value="2048">2048 px · sharpest</option>
+          <option value="1024" selected>1024 px · best for most uses</option>
+          <option value="512">512 px · smallest</option>
+          <option value="0">Leave pictures alone</option>
+        </select></label>
+      <label class="check"><input id="geo" type="checkbox" checked> Pack the shape too <small>(needs a modern engine: three.js, Unity, Unreal, Godot 4, Blender 3.6+)</small></label>
+    </fieldset>
+    <div class="go">
+      <button id="run" class="btn" type="button">Shrink it</button>
+      <a id="save" class="btn" hidden>Download</a>
+      <button id="again" class="link" type="button">Use a different file</button>
+    </div>
+    <p id="status" class="status" aria-live="polite"></p>
+  </section>
+
+  <section class="terms">
+    <h2>How it works</h2>
+    <p>Most of a 3D file's size is its pictures (textures). This tool scales oversized pictures down, saves them in a smaller format (WebP), removes duplicate data, and packs the shape itself with Meshopt compression. Names, materials and animations stay as they are.</p>
+    <p>Only .glb files for now. Have a .gltf, .fbx or .obj? Open it in <a href="https://www.blender.org/">Blender</a> (free) and export as glTF Binary (.glb) first.</p>
+  </section>
+</main>
+<footer class="foot"><span>Eden's Gate · The Workshop</span><a href="/tools/">All free tools</a><a href="/models/">Free 3D models</a><a href="/">Free music</a></footer>
+<script type="module" src="/tools/shrink/page.js?v=1"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

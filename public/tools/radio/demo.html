@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Radio</title>
+<!--
+  ============================================================
+   YOUR OWN FREE RADIO STATION  ·  starter kit from Eden's Gate
+   https://edensgate.art/tools/radio/
+  ============================================================
+   1. Change the three settings just below (name, tagline, colour).
+   2. Paste your song list where it says SONGS (the guide's
+      "song list maker" writes it for you).
+   3. Save, and put this one file online for free.
+  Everyone who opens the page hears the same song at the same moment,
+  like real radio. No server, no account, no monthly bill.
+  Free to use, change and share. No credit needed.
+-->
+<script>
+const STATION = {
+  name: "Eden's Gate Lo-Fi",
+  tagline: "A demo of the free radio kit. Yours can look just like this.",
+  colour: "#9fd3c7",
+};
+
+// SONGS: one line per song: [ "web address of the MP3", "Song title", length in seconds ]
+const SONGS = [
+  ["https://archive.org/download/alecpennradio-lofi/3am.mp3", "3am", 132],
+  ["https://archive.org/download/alecpennradio-lofi/3pm.mp3", "3pm", 145],
+  ["https://archive.org/download/alecpennradio-lofi/Backseat%20Window.mp3", "Backseat Window", 153],
+  ["https://archive.org/download/alecpennradio-lofi/Basking%20In%20The%20Moment.mp3", "Basking In The Moment", 140],
+  ["https://archive.org/download/alecpennradio-lofi/Be%20My%20Love.mp3", "Be My Love", 152],
+  ["https://archive.org/download/alecpennradio-lofi/Best%20Buds.mp3", "Best Buds", 145],
+  ["https://archive.org/download/alecpennradio-lofi/Bomb%20Pops%20And%20Sunshine.mp3", "Bomb Pops And Sunshine", 80],
+  ["https://archive.org/download/alecpennradio-lofi/Brown%20Paper%20Bag.mp3", "Brown Paper Bag", 123],
+  ["https://archive.org/download/alecpennradio-lofi/Brunch%20On%20The%20Terrace.mp3", "Brunch On The Terrace", 156],
+  ["https://archive.org/download/alecpennradio-lofi/Cartoons%20In%20The%20Morning.mp3", "Cartoons In The Morning", 152],
+  ["https://archive.org/download/alecpennradio-lofi/Clarity%20Unveiled.mp3", "Clarity Unveiled", 199],
+  ["https://archive.org/download/alecpennradio-lofi/Clarvoyence.mp3", "Clarvoyence", 123],
+  ["https://archive.org/download/alecpennradio-lofi/Coffee%20With%20Sugar.mp3", "Coffee With Sugar", 100],
+  ["https://archive.org/download/alecpennradio-lofi/Cooking%20With%20Heart.mp3", "Cooking With Heart", 133],
+  ["https://archive.org/download/alecpennradio-lofi/Corduroy%20Jacket.mp3", "Corduroy Jacket", 88],
+  ["https://archive.org/download/alecpennradio-lofi/Day%20Like%20this.mp3", "Day Like this", 174],
+  ["https://archive.org/download/alecpennradio-lofi/Daytime%20Stroll.mp3", "Daytime Stroll", 112],
+  ["https://archive.org/download/alecpennradio-lofi/Dinner%20By%20The%20Sea.mp3", "Dinner By The Sea", 156],
+  ["https://archive.org/download/alecpennradio-lofi/Elevator%20In%20New%20York.mp3", "Elevator In New York", 128],
+  ["https://archive.org/download/alecpennradio-lofi/Endless%20Sunshine.mp3", "Endless Sunshine", 99],
+  ["https://archive.org/download/alecpennradio-lofi/Exhale%20Slowly.mp3", "Exhale Slowly", 125],
+  ["https://archive.org/download/alecpennradio-lofi/Fairy%20Farts.mp3", "Fairy Farts", 157],
+  ["https://archive.org/download/alecpennradio-lofi/Fireflies.mp3", "Fireflies", 126],
+  ["https://archive.org/download/alecpennradio-lofi/Fireplace%20Glow.mp3", "Fireplace Glow", 121],
+  ["https://archive.org/download/alecpennradio-lofi/Fish%20Tank%20Rock.mp3", "Fish Tank Rock", 95],
+  ["https://archive.org/download/alecpennradio-lofi/Flickering%20Candle.mp3", "Flickering Candle", 117],
+  ["https://archive.org/download/alecpennradio-lofi/Forget%20Me%20Not.mp3", "Forget Me Not", 149],
+  ["https://archive.org/download/alecpennradio-lofi/Freedom%20To%20Be.mp3", "Freedom To Be", 150],
+  ["https://archive.org/download/alecpennradio-lofi/Fresco.mp3", "Fresco", 158],
+  ["https://archive.org/download/alecpennradio-lofi/Fresh%20Coffee.mp3", "Fresh Coffee", 156],
+  ["https://archive.org/download/alecpennradio-lofi/Fresh%20Lemonade.mp3", "Fresh Lemonade", 123],
+  ["https://archive.org/download/alecpennradio-lofi/Friday%20On%20The%20Couch.mp3", "Friday On The Couch", 120],
+  ["https://archive.org/download/alecpennradio-lofi/Generous.mp3", "Generous", 135],
+  ["https://archive.org/download/alecpennradio-lofi/Ghibli%20On%20The%20Couch.mp3", "Ghibli On The Couch", 273],
+  ["https://archive.org/download/alecpennradio-lofi/Grand%20Prize%20Winner.mp3", "Grand Prize Winner", 134],
+  ["https://archive.org/download/alecpennradio-lofi/Grandiose.mp3", "Grandiose", 149],
+  ["https://archive.org/download/alecpennradio-lofi/Greetings%20From%20The%20Moon.mp3", "Greetings From The Moon", 131],
+  ["https://archive.org/download/alecpennradio-lofi/Hammock%20And%20A%20Joint.mp3", "Hammock And A Joint", 158],
+  ["https://archive.org/download/alecpennradio-lofi/Hammock.mp3", "Hammock", 112],
+  ["https://archive.org/download/alecpennradio-lofi/Harmonies%20Resting.mp3", "Harmonies Resting", 135],
+  ["https://archive.org/download/alecpennradio-lofi/Healthy%20Distance.mp3", "Healthy Distance", 156],
+  ["https://archive.org/download/alecpennradio-lofi/Hello%20From%20Space.mp3", "Hello From Space", 130],
+  ["https://archive.org/download/alecpennradio-lofi/Homemade%20Lemonade.mp3", "Homemade Lemonade", 127],
+  ["https://archive.org/download/alecpennradio-lofi/Hotel%20Lobby.mp3", "Hotel Lobby", 156],
+  ["https://archive.org/download/alecpennradio-lofi/House%20Sitting.mp3", "House Sitting", 135],
+  ["https://archive.org/download/alecpennradio-lofi/In%20The%20Garden.mp3", "In The Garden", 137],
+  ["https://archive.org/download/alecpennradio-lofi/Jazzy.mp3", "Jazzy", 127],
+  ["https://archive.org/download/alecpennradio-lofi/Laid-back.mp3", "Laid-back", 122],
+  ["https://archive.org/download/alecpennradio-lofi/Lessons%20In%20Peace.mp3", "Lessons In Peace", 142],
+  ["https://archive.org/download/alecpennradio-lofi/Loading%20Screen%20Jazz.mp3", "Loading Screen Jazz", 173],
+  ["https://archive.org/download/alecpennradio-lofi/Mario%20And%20Cheerios.mp3", "Mario And Cheerios", 118],
+  ["https://archive.org/download/alecpennradio-lofi/Mellow%20D.mp3", "Mellow D", 137],
+  ["https://archive.org/download/alecpennradio-lofi/Midnight%20Coffee.mp3", "Midnight Coffee", 143],
+  ["https://archive.org/download/alecpennradio-lofi/Midnight%20Melody.mp3", "Midnight Melody", 171],
+  ["https://archive.org/download/alecpennradio-lofi/Nap%20Time%20In%20The%20Shade.mp3", "Nap Time In The Shade", 144],
+  ["https://archive.org/download/alecpennradio-lofi/Outerlands.mp3", "Outerlands", 209],
+  ["https://archive.org/download/alecpennradio-lofi/PB%26J.mp3", "PB&J", 134],
+  ["https://archive.org/download/alecpennradio-lofi/Pleasure%20Is%20Mine.mp3", "Pleasure Is Mine", 135],
+  ["https://archive.org/download/alecpennradio-lofi/Pleasures%20mine.mp3", "Pleasures mine", 133],
+  ["https://archive.org/download/alecpennradio-lofi/Precious.mp3", "Precious", 120],
+  ["https://archive.org/download/alecpennradio-lofi/Present.mp3", "Present", 93],
+  ["https://archive.org/download/alecpennradio-lofi/Presently%20Grounded.mp3", "Presently Grounded", 138],
+  ["https://archive.org/download/alecpennradio-lofi/Pressure%20Free%20Monday.mp3", "Pressure Free Monday", 150],
+  ["https://archive.org/download/alecpennradio-lofi/Pressure%20Free.mp3", "Pressure Free", 153],
+  ["https://archive.org/download/alecpennradio-lofi/Raspberry%20Sorbet.mp3", "Raspberry Sorbet", 124],
+  ["https://archive.org/download/alecpennradio-lofi/Replaced%20You.mp3", "Replaced You", 134],
+  ["https://archive.org/download/alecpennradio-lofi/Reset%20The%20Day.mp3", "Reset The Day", 122],
+  ["https://archive.org/download/alecpennradio-lofi/Rolling%20Hills.mp3", "Rolling Hills", 130],
+  ["https://archive.org/download/alecpennradio-lofi/Self%20Care%20And%20A%20Joint.mp3", "Self Care And A Joint", 122],
+  ["https://archive.org/download/alecpennradio-lofi/Settle%20The%20Bill.mp3", "Settle The Bill", 122],
+  ["https://archive.org/download/alecpennradio-lofi/She%20Said%20Yes.mp3", "She Said Yes", 138],
+  ["https://archive.org/download/alecpennradio-lofi/Sherbert%20And%20Sunshine.mp3", "Sherbert And Sunshine", 136],
+  ["https://archive.org/download/alecpennradio-lofi/Sidewalk%20Swing.mp3", "Sidewalk Swing", 114],
+  ["https://archive.org/download/alecpennradio-lofi/Sinatra.mp3", "Sinatra", 129],
+  ["https://archive.org/download/alecpennradio-lofi/Slow%20And%20Easy.mp3", "Slow And Easy", 148],
+  ["https://archive.org/download/alecpennradio-lofi/Smokey.mp3", "Smokey", 137],
+  ["https://archive.org/download/alecpennradio-lofi/Sophisticated%20Laziness.mp3", "Sophisticated Laziness", 142],
+  ["https://archive.org/download/alecpennradio-lofi/Spring%20Time%20Bounce.mp3", "Spring Time Bounce", 120],
+  ["https://archive.org/download/alecpennradio-lofi/Springtime%20In%20Japan.mp3", "Springtime In Japan", 138],
+  ["https://archive.org/download/alecpennradio-lofi/Stoners%20Ballad.mp3", "Stoners Ballad", 137],
+  ["https://archive.org/download/alecpennradio-lofi/Stretching%20The%20Day.mp3", "Stretching The Day", 154],
+  ["https://archive.org/download/alecpennradio-lofi/Strolling%20Past%20Slowly.mp3", "Strolling Past Slowly", 125],
+  ["https://archive.org/download/alecpennradio-lofi/Summer%20In%20The%20City.mp3", "Summer In The City", 114],
+  ["https://archive.org/download/alecpennradio-lofi/Sunday%20Shoes.mp3", "Sunday Shoes", 108],
+  ["https://archive.org/download/alecpennradio-lofi/Sunset%20On%20Easy%20Mode.mp3", "Sunset On Easy Mode", 134],
+  ["https://archive.org/download/alecpennradio-lofi/Sweet%20And%20Slow.mp3", "Sweet And Slow", 133],
+  ["https://archive.org/download/alecpennradio-lofi/Sweeter%20Than%20Candy.mp3", "Sweeter Than Candy", 112],
+  ["https://archive.org/download/alecpennradio-lofi/Swell.mp3", "Swell", 176],
+  ["https://archive.org/download/alecpennradio-lofi/Tasty.mp3", "Tasty", 125],
+  ["https://archive.org/download/alecpennradio-lofi/Tea%20And%20Cookies.mp3", "Tea And Cookies", 122],
+  ["https://archive.org/download/alecpennradio-lofi/Tempted.mp3", "Tempted", 150],
+  ["https://archive.org/download/alecpennradio-lofi/Textures%20Of%20Sunset.mp3", "Textures Of Sunset", 152],
+  ["https://archive.org/download/alecpennradio-lofi/Ticking%20Clock.mp3", "Ticking Clock", 126],
+  ["https://archive.org/download/alecpennradio-lofi/Time%20Alone.mp3", "Time Alone", 95],
+  ["https://archive.org/download/alecpennradio-lofi/Timeless.mp3", "Timeless", 333],
+  ["https://archive.org/download/alecpennradio-lofi/Tourism%20Inward.mp3", "Tourism Inward", 135],
+  ["https://archive.org/download/alecpennradio-lofi/Treasure%20In%20A%20Box.mp3", "Treasure In A Box", 124],
+  ["https://archive.org/download/alecpennradio-lofi/Trigonometry%20In%20Motion.mp3", "Trigonometry In Motion", 145],
+  ["https://archive.org/download/alecpennradio-lofi/Trippin%20Over%20You.mp3", "Trippin Over You", 213],
+  ["https://archive.org/download/alecpennradio-lofi/TV%20Static.mp3", "TV Static", 132],
+  ["https://archive.org/download/alecpennradio-lofi/Under%20Water.mp3", "Under Water", 166],
+  ["https://archive.org/download/alecpennradio-lofi/Walking%20Slow.mp3", "Walking Slow", 130],
+  ["https://archive.org/download/alecpennradio-lofi/Watering%20The%20Plants.mp3", "Watering The Plants", 135],
+  ["https://archive.org/download/alecpennradio-lofi/Wine%20And%20Cheese.mp3", "Wine And Cheese", 167],
+  ["https://archive.org/download/alecpennradio-lofi/Yearly%20Celebration.mp3", "Yearly Celebration", 105],
+  ["https://archive.org/download/alecpennradio-lofi/Years%20Of%20Our%20Lives.mp3", "Years Of Our Lives", 178],
+  ["https://archive.org/download/alecpennradio-lofi/Yoga%20With%20The%20Cat.mp3", "Yoga With The Cat", 128]
+];
+</script>
+<style>
+  :root { --c: #d4b25a; --bg: #101413; --ink: #f2efe6; --soft: #9aa39f; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { min-height: 100%; display: grid; place-items: center; padding: 24px 16px; text-align: center; }
+  .dial { width: min(320px, 70vw); aspect-ratio: 1; border-radius: 50%; border: 3px solid var(--c); display: grid; place-items: center; margin: 0 auto 28px; position: relative;
+    box-shadow: 0 0 60px color-mix(in srgb, var(--c) 25%, transparent); }
+  .dial::after { content: ""; position: absolute; inset: 14px; border-radius: 50%; border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); }
+  button { all: unset; cursor: pointer; width: 46%; aspect-ratio: 1; border-radius: 50%; background: var(--c); color: var(--bg); display: grid; place-items: center;
+    font: 700 clamp(18px, 4vw, 24px) system-ui; letter-spacing: .08em; z-index: 1; transition: transform .15s; }
+  button:hover { transform: scale(1.04); } button:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+  h1 { margin: 0; font-size: clamp(30px, 7vw, 54px); letter-spacing: .02em; }
+  .tag { color: var(--soft); margin: 6px 0 26px; }
+  .live { display: inline-flex; gap: 8px; align-items: center; font: 600 12px ui-monospace, monospace; letter-spacing: .18em; color: var(--c); }
+  .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); animation: p 1.6s infinite; } @keyframes p { 50% { opacity: .25; } }
+  .now { font-size: clamp(20px, 4.5vw, 28px); margin: 10px 0 4px; min-height: 1.3em; }
+  .bar { width: min(420px, 86vw); height: 4px; background: #ffffff22; border-radius: 4px; margin: 16px auto 8px; overflow: hidden; } .bar b { display: block; height: 100%; width: 0; background: var(--c); }
+  .next { color: var(--soft); font-size: 15px; }
+  .vol { margin-top: 22px; accent-color: var(--c); width: 160px; }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <div class="dial"><button id="go" type="button" aria-label="Tune in">TUNE IN</button></div>
+    <h1 id="name"></h1>
+    <p class="tag" id="tag"></p>
+    <div class="live"><i></i> ON AIR</div>
+    <p class="now" id="now">&nbsp;</p>
+    <div class="bar"><b id="bar"></b></div>
+    <p class="next" id="next"></p>
+    <input class="vol" id="vol" type="range" min="0" max="100" value="80" aria-label="Volume">
+  </div>
+</main>
+<audio id="audio" preload="none"></audio>
+<script>
+// ---- the radio. You don't need to change anything below. ----
+const $ = (id) => document.getElementById(id);
+document.documentElement.style.setProperty("--c", STATION.colour);
+document.title = STATION.name; $("name").textContent = STATION.name; $("tag").textContent = STATION.tagline;
+const list = SONGS.filter((s) => s && s[0] && s[2] > 0).map(([url, title, secs]) => ({ url, title, secs: +secs }));
+
+// Shuffle once, the same way on every phone and computer (seeded by the station name), then loop forever.
+let seed = [...STATION.name].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7) || 1;
+const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+const total = list.reduce((a, s) => a + s.secs, 0);
+
+// Where is the station right now? Everyone's clock gives the same answer.
+function onAir(t = Date.now() / 1000) {
+  let pos = ((t % total) + total) % total;
+  for (let i = 0; i < list.length; i++) { if (pos < list[i].secs) return { i, song: list[i], offset: pos, left: list[i].secs - pos }; pos -= list[i].secs; }
+  return { i: 0, song: list[0], offset: 0, left: list[0].secs };
+}
+const audio = $("audio"); let on = false, cur = null;
+function show() {
+  const a = onAir(); $("now").textContent = a.song.title; $("next").textContent = list.length > 1 ? "Up next: " + list[(a.i + 1) % list.length].title : "";
+  $("bar").style.width = (a.offset / a.song.secs * 100).toFixed(2) + "%";
+}
+function tune() {
+  let a = onAir(); if (a.left < 2) a = onAir(Date.now() / 1000 + a.left + 0.1);
+  cur = a.song; audio.src = a.song.url;
+  audio.onloadedmetadata = () => { const off = onAir().offset; if (off > 1) audio.currentTime = off; };
+  audio.play().catch(() => {});
+  if ("mediaSession" in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title: a.song.title, artist: STATION.name });
+}
+audio.onended = () => on && tune();
+audio.onerror = () => { if (on) setTimeout(() => { const a = onAir(); if (a.song === cur) setTimeout(tune, (a.left + 0.5) * 1000); else tune(); }, 1000); };
+$("go").onclick = () => {
+  on = !on; $("go").textContent = on ? "STOP" : "TUNE IN"; $("go").setAttribute("aria-label", on ? "Stop" : "Tune in");
+  if (on) tune(); else audio.pause();
+};
+$("vol").oninput = (e) => (audio.volume = e.target.value / 100); audio.volume = 0.8;
+setInterval(show, 1000); show();
+</script>
+</body>
+</html>

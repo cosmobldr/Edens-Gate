@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Song Check — free LUFS loudness meter, BPM and key finder · Eden's Gate</title>
+<meta name="description" content="Check a song's loudness for Spotify and YouTube (LUFS), its peak level, tempo (BPM) and key. Free, in your browser, no upload.">
+<meta property="og:title" content="Song Check · Eden's Gate">
+<meta property="og:description" content="Check a song's loudness for Spotify and YouTube (LUFS), its peak level, tempo (BPM) and key. Free, in your browser, no upload.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://edensgate.art/tools/check/">
+<meta property="og:site_name" content="Eden's Gate">
+<meta property="og:image" content="https://edensgate.art/share.jpg?v=2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#12302c">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem("egMode");if(!m){var h=new Date().getHours();m=(h>=6&&h<18)?"day":"night"}document.documentElement.dataset.theme=m}catch(e){document.documentElement.dataset.theme="night"}</script>
+<link rel="stylesheet" href="/models/models.css?v=1">
+<link rel="stylesheet" href="/tools/tools.css?v=5">
+</head>
+<body>
+<header class="top"><a class="back" href="/tools/">← All tools</a><button id="mode" class="mode" type="button" aria-label="Switch day and night">☾</button></header>
+<section class="hero">
+  <p class="eyebrow"><span aria-hidden="true">✦</span> The Workshop <span aria-hidden="true">✦</span></p>
+  <h1>Song Check</h1>
+  <p class="about">Drop in a song and see how loud it is for Spotify and YouTube, how close it gets to distorting, its tempo and its key. <b>Your file is never uploaded.</b></p>
+</section>
+<main class="bench">
+  <label id="drop" class="drop" tabindex="0">
+    <input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.flac,.ogg,.aac" class="visually-hidden">
+    <span class="drop-big">Drop a song here</span>
+    <span class="drop-small">or tap to choose one · MP3, WAV, M4A, FLAC, OGG</span>
+  </label>
+  <p id="status" class="status" aria-live="polite"></p>
+  <section id="out" hidden>
+    <p id="name" class="file-name"></p>
+    <div class="cards">
+      <div class="card-x wide">
+        <h3>Loudness</h3><p class="big" id="lufs"></p>
+        <div class="meter" aria-hidden="true"><div class="zone"></div><i id="needle"></i>
+          <span style="left:calc((24 - 16) / 18 * 100%)">Apple −16</span><span style="left:calc((24 - 14) / 18 * 100%)">Spotify · YouTube −14</span></div>
+        <div class="scale" aria-hidden="true"><span>−24 quiet</span><span>−6 very loud</span></div>
+        <p id="lufs-say"></p>
+      </div>
+      <div class="card-x"><h3>Peak</h3><p class="big" id="peak"></p><p id="peak-say"></p></div>
+      <div class="card-x"><h3>Tempo</h3><p class="big" id="bpm"></p><p id="bpm-say"></p></div>
+      <div class="card-x"><h3>Key</h3><p class="big" id="key"></p><p id="key-say"></p></div>
+      <div class="card-x"><h3>Length</h3><p class="big" id="len"></p><p id="len-say"></p></div>
+    </div>
+    <div class="go"><button id="again" class="link" type="button">Check another song</button></div>
+  </section>
+  <section class="terms">
+    <h2>Good to know</h2>
+    <p>Loudness is measured the way streaming services do it (integrated LUFS, ITU-R BS.1770). Spotify, YouTube and Amazon aim for about −14 LUFS and turn louder songs down. Apple Music aims for about −16. Peak shows the highest sample in the file.</p>
+    <p>Tempo and key are a computer's best guess. They're usually right, but tempo can come out half or double, and songs that change key can confuse it. Trust your ears.</p>
+  </section>
+</main>
+<footer class="foot"><span>Eden's Gate · The Workshop</span><a href="/tools/">All free tools</a><a href="/models/">Free 3D models</a><a href="/">Free music</a></footer>
+<script type="module" src="/tools/check/page.js?v=1"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

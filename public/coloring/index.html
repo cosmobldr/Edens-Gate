@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Coloring Pages to Print — mandalas, flowers, night sky · Eden's Gate</title>
+<meta name="description" content="Thousands of free printable coloring pages: mandalas, cherry blossoms, night skies and maze tiles. Print one or a pack of ten. No sign-up, no watermark.">
+<meta property="og:title" content="Free Coloring Pages to Print · Eden's Gate">
+<meta property="og:description" content="Thousands of free printable coloring pages: mandalas, cherry blossoms, night skies and maze tiles. Print one or a pack of ten. No sign-up, no watermark.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://edensgate.art/coloring/">
+<meta property="og:site_name" content="Eden's Gate">
+<meta property="og:image" content="https://edensgate.art/share.jpg?v=2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#12302c">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem("egMode");if(!m){var h=new Date().getHours();m=(h>=6&&h<18)?"day":"night"}document.documentElement.dataset.theme=m}catch(e){document.documentElement.dataset.theme="night"}</script>
+<link rel="stylesheet" href="/models/models.css?v=1">
+<link rel="stylesheet" href="/tools/tools.css?v=5">
+<link rel="stylesheet" href="/coloring/coloring.css?v=1">
+</head>
+<body>
+<header class="top"><a class="back" href="/">← Eden's Gate</a><button id="mode" class="mode" type="button" aria-label="Switch day and night">☾</button></header>
+<section class="hero">
+  <p class="eyebrow"><span aria-hidden="true">✦</span> The Coloring Room <span aria-hidden="true">✦</span></p>
+  <h1>Free Coloring Pages</h1>
+  <p class="lede">Print as many as you like.</p>
+  <p class="about">Thousands of free coloring pages to print at home, at school or at the library. Pick a style, flip through the numbers, print one or a pack of ten. <b>No sign-up, no watermark.</b></p>
+</section>
+<main class="bench color-bench">
+  <div class="quick style-chips" id="styles" role="group" aria-label="Style"></div>
+  <p id="blurb" class="blurb"></p>
+  <div class="color-grid">
+    <div class="sheet-wrap">
+      <div id="sheet" class="sheet" aria-live="polite"></div>
+    </div>
+    <div class="color-side">
+      <div class="pager">
+        <button id="prev" class="chip" type="button" aria-label="Previous page">◀</button>
+        <label class="pno">No. <input id="no" type="number" min="1" max="99999" value="1" inputmode="numeric"></label>
+        <button id="next" class="chip" type="button" aria-label="Next page">▶</button>
+        <button id="rand" class="chip" type="button">Surprise me</button>
+      </div>
+      <div class="go">
+        <button id="print1" class="btn" type="button">⎙ Print this page</button>
+        <button id="print10" class="btn ghost" type="button">Print a pack of 10</button>
+      </div>
+      <div class="go small-go">
+        <button id="png" class="link" type="button">Download as picture (PNG)</button>
+        <button id="svg" class="link" type="button">Download as SVG</button>
+      </div>
+      <p class="tip">Printing tip: choose "Fit to page" or 100% scale. Pages are US Letter and fit A4 too.</p>
+      <h2 class="soon-h">More in this style</h2>
+      <ul id="thumbs" class="thumbs"></ul>
+    </div>
+  </div>
+  <section class="terms">
+    <h2>Use them for anything</h2>
+    <p>Classrooms, libraries, waiting rooms, birthday parties, quiet nights with no power. Print them, copy them, share them. Every page is free and yours to use, no credit needed.</p>
+  </section>
+</main>
+<div id="print-area" class="print-area" aria-hidden="true"></div>
+<footer class="foot"><span>Eden's Gate · The Workshop</span><a href="/tools/">All free tools</a><a href="/models/">Free 3D models</a><a href="/">Free music</a></footer>
+<script type="module" src="/coloring/coloring.js?v=2"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

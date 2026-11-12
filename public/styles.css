@@ -283,7 +283,7 @@ body { background-image: radial-gradient(ellipse at 50% 42%, rgba(62, 111, 86, .
 @media (min-width: 761px) { .stage.has3d.is-open .enter { left: calc(50% + 230px); bottom: 12%; } }
 
 /* ── the two rooms of the vault: music + 3D models ── */
-.rooms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 920px; margin: 0 auto 22px; }
+.rooms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 760px; margin: 0 auto 22px; }
 .room { display: flex; align-items: center; gap: 14px; text-align: left; text-decoration: none; color: var(--mist);
   padding: 16px 18px; border-radius: 16px; border: 1px solid color-mix(in srgb, var(--iron) 55%, transparent);
   background: color-mix(in srgb, var(--moss) 85%, transparent); box-shadow: 0 10px 30px rgba(0,0,0,.14);
@@ -343,3 +343,7 @@ body { background-image: radial-gradient(ellipse at 50% 42%, rgba(62, 111, 86, .
 .bed-models.bed-tools { margin-top: -6px; }
 @media (max-width: 760px) { .bed-models.bed-tools { margin-top: 0; } }
 .p-trim { text-decoration: none; display: inline-flex; align-items: center; white-space: nowrap; }
+
+/* offline */
+.song .off { font-size: 12px; color: var(--iron); margin-left: 4px; }
+.warn { font: 13px var(--mono); color: #e58aa6; margin-top: 8px; }

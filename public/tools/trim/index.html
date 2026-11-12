@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Free Song Trimmer — cut MP3s online, no upload · Eden's Gate</title>
-<meta name="description" content="Cut any song to the part you need, add a fade, and download MP3 or WAV. Free, in your browser, no upload, no sign-up.">
-<meta property="og:title" content="Free Song Trimmer · Eden's Gate">
-<meta property="og:description" content="Cut any song to the part you need, add a fade, and download MP3 or WAV. Free, in your browser, no upload, no sign-up.">
+<title>Free Song Trimmer & Ringtone Maker — cut MP3s, no upload · Eden's Gate</title>
+<meta name="description" content="Cut any song to the part you need, add a fade, make an Android or iPhone ringtone, and download. Free, in your browser, no upload, no sign-up.">
+<meta property="og:title" content="Free Song Trimmer & Ringtone Maker · Eden's Gate">
+<meta property="og:description" content="Cut any song to the part you need, add a fade, make an Android or iPhone ringtone, and download. Free, in your browser, no upload, no sign-up.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://edensgate.art/tools/trim/">
 <meta property="og:site_name" content="Eden's Gate">
@@ -18,13 +18,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <script>try{var m=localStorage.getItem("egMode");if(!m){var h=new Date().getHours();m=(h>=6&&h<18)?"day":"night"}document.documentElement.dataset.theme=m}catch(e){document.documentElement.dataset.theme="night"}</script>
 <link rel="stylesheet" href="/models/models.css?v=1">
-<link rel="stylesheet" href="/tools/tools.css?v=4">
+<link rel="stylesheet" href="/tools/tools.css?v=5">
 </head>
 <body>
 <header class="top"><a class="back" href="/tools/">← All tools</a><button id="mode" class="mode" type="button" aria-label="Switch day and night">☾</button></header>
 <section class="hero">
   <p class="eyebrow"><span aria-hidden="true">✦</span> The Workshop <span aria-hidden="true">✦</span></p>
   <h1>Song Trimmer</h1>
+  <p class="lede">and ringtone maker</p>
   <p class="about">Cut any song to just the part you need, for a video, a Short, a ringtone or an intro. Add a smooth fade and download it. Works with MP3, WAV, M4A, FLAC, OGG, and even the sound from a video. <b>Your file is never uploaded.</b></p>
 </section>
 <main class="bench">
@@ -50,6 +51,7 @@
       <button type="button" data-len="15">15 s</button><button type="button" data-len="30">30 s</button>
       <button type="button" data-len="60">60 s</button><button type="button" data-len="90">90 s</button>
       <button type="button" data-len="0">Whole song</button>
+      <button type="button" data-len="30" data-ring="1">☎ Ringtone (30 s)</button>
     </div>
     <fieldset class="opts">
       <legend>Settings</legend>
@@ -69,11 +71,15 @@
   <section class="terms">
     <h2>Good to know</h2>
     <p>Drag the gold handles on the waveform, or type exact times like <b>1:05.5</b>. Press <b>Preview</b> to hear your clip with the fades before you save it.</p>
+    <h2>Make a ringtone</h2>
+    <p>Press <b>☎ Ringtone</b>, drag the clip to your favorite part, and save it.</p>
+    <p><b>Android:</b> save as MP3, copy it to your phone, then go to Settings → Sound → Ringtone and pick it (on some phones, add it from the Ringtones folder first).</p>
+    <p><b>iPhone:</b> if your browser offers <b>iPhone ringtone (.m4r)</b>, save that and drag it onto your iPhone in Finder (Mac) or iTunes (Windows). Or save an MP3, open it in Apple's free GarageBand app, then press Share → Ringtone. iPhone ringtones can be up to 40 seconds.</p>
     <p>Every song in <a href="/">the Eden's Gate vault</a> is free to use for anything, trimmed or not. No credit needed.</p>
   </section>
 </main>
 <footer class="foot"><span>Eden's Gate · The Workshop</span><a href="/tools/">All free tools</a><a href="/models/">Free 3D models</a><a href="/">Free music</a></footer>
-<script type="module" src="/tools/trim/page.js?v=1"></script>
+<script type="module" src="/tools/trim/page.js?v=2"></script>
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>

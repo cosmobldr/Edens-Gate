@@ -16,6 +16,39 @@ const favList = () => all.filter((t) => favs.has(favKey(t)));
 function toggleFav(t) {
   const k = favKey(t); favs.has(k) ? favs.delete(k) : favs.add(k); saveFavs(); renderBeds(); renderShelf();
 }
+// offline: songs saved into this browser's storage so they play with no signal
+const OFFLINE_CACHE = "eg-songs-v1";
+let offline = new Set();
+try { offline = new Set(JSON.parse(localStorage.getItem("egOffline") || "[]")); } catch (e) {}
+const saveOfflineList = () => { try { localStorage.setItem("egOffline", JSON.stringify([...offline])); } catch (e) {} };
+const offlineList = () => all.filter((t) => offline.has(favKey(t)));
+const canOffline = "caches" in window;
+async function cachedUrl(t) {
+  if (!canOffline || !offline.has(favKey(t))) return null;
+  try { const r = await (await caches.open(OFFLINE_CACHE)).match(songUrl(t)); return r ? URL.createObjectURL(await r.blob()) : null; } catch (e) { return null; }
+}
+async function saveForOffline(songs, btn) {
+  const todo = songs.filter((t) => !offline.has(favKey(t)));
+  if (!todo.length) { btn.textContent = "All saved ✓"; return; }
+  btn.disabled = true;
+  try { await navigator.storage?.persist?.(); } catch (e) {}
+  const cache = await caches.open(OFFLINE_CACHE); let done = 0, failed = 0;
+  for (const t of todo) {
+    btn.textContent = `Saving ${done + failed + 1} of ${todo.length}…`;
+    try { const r = await fetch(songUrl(t)); if (!r.ok) throw 0; await cache.put(songUrl(t), r); offline.add(favKey(t)); saveOfflineList(); done++; }
+    catch (e) { failed++; }
+  }
+  btn.disabled = false; renderBeds(); renderShelf();
+  if (failed) alertLine(`${failed} song${failed === 1 ? "" : "s"} couldn't be saved. Check your connection and try again.`);
+}
+async function removeOffline(songs) {
+  try { const cache = await caches.open(OFFLINE_CACHE); for (const t of songs) { await cache.delete(songUrl(t)); offline.delete(favKey(t)); } } catch (e) {}
+  saveOfflineList(); renderBeds(); renderShelf();
+}
+function alertLine(msg) { const p = document.createElement("p"); p.className = "warn"; p.textContent = msg; $("shelf-head").querySelector("div:last-child")?.append(p); }
+async function storageLine() {
+  try { const e = await navigator.storage.estimate(); const el = $("off-space"); if (el) el.textContent = `Using about ${Math.round(e.usage / 1e6)} MB of this device's storage.`; } catch (e) {}
+}
 function surprise() {
   const songs = list().filter((t) => t !== playing); if (songs.length) play(songs[Math.floor(Math.random() * songs.length)]);
 }
@@ -86,7 +119,7 @@ async function init() {
   all = collections.flatMap((c) => c.tracks).sort((a, b) => a.t.localeCompare(b.t));
   $("room-songs").textContent = `${all.length.toLocaleString()} free songs to stream and download`;
   const h = decodeURIComponent(location.hash.slice(1));
-  if (collections.some((c) => c.slug === h) || h === "favs") current = h;
+  if (collections.some((c) => c.slug === h) || h === "favs" || h === "offline") current = h;
   // links from Alec Penn Radio arrive as ?q=<song title> to show that song straight away
   const q = new URLSearchParams(location.search).get("q");
   if (q) { query = q.trim(); $("q").value = query; requestAnimationFrame(() => $("library").scrollIntoView({ behavior: "smooth" })); }
@@ -111,10 +144,12 @@ function renderBeds() {
   const cats = models?.categories || [];
   $("beds").innerHTML =
     `<li><a class="bed-models" href="/models/"><span class="bm-ico" aria-hidden="true">◆</span><span><b>3D Models</b><small>${models?.models.length ? models.models.length.toLocaleString() + " free · GLB + Blender" : "Free · first ones coming soon"}</small></span><span aria-hidden="true">→</span></a></li>` +
-    `<li><a class="bed-models bed-tools" href="/tools/"><span class="bm-ico" aria-hidden="true">✂</span><span><b>Free Tools</b><small>Trim · covers · convert · radio kit</small></span><span aria-hidden="true">→</span></a></li>` +
+    `<li><a class="bed-models bed-tools" href="/tools/"><span class="bm-ico" aria-hidden="true">✂</span><span><b>Free Tools</b><small>Ringtones · covers · tuner · Survival Radio</small></span><span aria-hidden="true">→</span></a></li>` +
+    `<li><a class="bed-models bed-tools" href="/coloring/"><span class="bm-ico" aria-hidden="true">✎</span><span><b>Coloring Pages</b><small>Endless pages to print</small></span><span aria-hidden="true">→</span></a></li>` +
     `<li class="sep sep-top">♪ Music</li>` +
     item("all", "All songs", all.length) +
     item("favs", "♥ My favorites", favList().length) +
+    (canOffline ? item("offline", "⤓ Saved for offline", offlineList().length) : "") +
     genres.map((c) => item(c.slug, c.name, c.tracks.length)).join("") +
     (series.length ? `<li class="sep">Series</li>` + series.map((c) => item(c.slug, c.name, c.tracks.length)).join("") : "") +
     `<li class="sep sep-3d">◆ 3D Models</li>` +
@@ -136,6 +171,7 @@ function list() {
   }
   if (current === "all") return all;
   if (current === "favs") return favList();
+  if (current === "offline") return offlineList();
   return collections.find((c) => c.slug === current).tracks;
 }
 
@@ -152,7 +188,11 @@ function renderShelf() {
   } else if (current === "favs") {
     $("shelf-head").style.gridTemplateColumns = "0 1fr";
     $("shelf-head").innerHTML = `<div></div><div><h2>My favorites</h2>
-      <p>${songs.length ? `${songs.length} song${songs.length === 1 ? "" : "s"} you've hearted. Saved on this device, no account needed.` : "Tap the ♡ next to any song to keep it here. Saved on this device, no account needed."}</p>${songs.length > 1 ? SURPRISE : ""}</div>`;
+      <p>${songs.length ? `${songs.length} song${songs.length === 1 ? "" : "s"} you've hearted. Saved on this device, no account needed.` : "Tap the ♡ next to any song to keep it here. Saved on this device, no account needed."}</p>${songs.length && canOffline ? `<button class="zip" id="save-off" type="button">⤓ Save these to play offline</button> ` : ""}${songs.length > 1 ? SURPRISE : ""}</div>`;
+  } else if (current === "offline") {
+    $("shelf-head").style.gridTemplateColumns = "0 1fr";
+    $("shelf-head").innerHTML = `<div></div><div><h2>Saved for offline</h2>
+      <p>${songs.length ? `${songs.length} song${songs.length === 1 ? "" : "s"} that play with no internet, right here in this browser. <span id="off-space"></span>` : "Heart some songs, then press “Save these to play offline” in My favorites. They'll play here with no signal, even in airplane mode."}</p>${songs.length ? `<button class="zip ghost" id="clear-off" type="button">Remove all from this device</button> ` : ""}${songs.length > 1 ? SURPRISE : ""}</div>`;
   } else {
     $("shelf-head").style.gridTemplateColumns = "";
     const mins = Math.round(c.tracks.reduce((a, t) => a + t.s, 0) / 60);
@@ -164,11 +204,11 @@ function renderShelf() {
   $("songs").innerHTML = songs.length ? page.map((t, i) => `
     <li class="song${playing === t ? " playing" : ""}" data-i="${i}">
       <img src="${t.cover}" alt="" loading="lazy" width="44" height="44">
-      <div><div class="t">${esc(t.t)}</div>${current === "all" || query ? `<div class="c">${esc(t.coll)}</div>` : ""}</div>
+      <div><div class="t">${esc(t.t)}${offline.has(favKey(t)) ? ` <span class="off" title="Saved for offline" aria-label="saved for offline">⤓</span>` : ""}</div>${current === "all" || query ? `<div class="c">${esc(t.coll)}</div>` : ""}</div>
       <span class="d">${fmt(t.s)}</span>
       <span class="acts"><button data-act="fav" aria-pressed="${favs.has(favKey(t))}" aria-label="${favs.has(favKey(t)) ? "Remove" : "Add"} ${esc(t.t)} ${favs.has(favKey(t)) ? "from" : "to"} favorites">${favs.has(favKey(t)) ? "♥" : "♡"}</button><button data-act="play" data-on="${playing === t && !audio.paused}" aria-label="${playing === t && !audio.paused ? "Pause" : "Play"} ${esc(t.t)}">${playing === t && !audio.paused ? "Pause" : "Play"}</button><button data-act="dl" aria-label="Download ${esc(t.t)}">Download</button></span>
     </li>`).join("") + (songs.length > shown ? `<li class="more"><button class="zip" id="more">Show ${Math.min(PAGE, songs.length - shown)} more</button></li>` : "")
-    : current === "favs" && !query ? "" : `<li class="empty">No songs called that yet. Try a shorter word, or browse a collection.</li>`;
+    : (current === "favs" || current === "offline") && !query ? "" : `<li class="empty">No songs called that yet. Try a shorter word, or browse a collection.</li>`;
   $("songs").querySelectorAll(".song").forEach((li) => {
     const t = page[+li.dataset.i];
     li.querySelector('[data-act="fav"]').onclick = () => toggleFav(t);
@@ -176,15 +216,21 @@ function renderShelf() {
     li.querySelector('[data-act="dl"]').onclick = (e) => download(t, e.currentTarget);
   });
   const sp = $("surprise"); if (sp) sp.onclick = surprise;
+  const so = $("save-off"); if (so) so.onclick = () => saveForOffline(favList(), so);
+  const co = $("clear-off"); if (co) co.onclick = () => removeOffline(offlineList());
+  if (current === "offline") storageLine();
   const more = $("more"); if (more) more.onclick = () => { shown += PAGE; renderShelf(); };
 }
 
 /* ── player ── */
 const audio = $("audio");
-function play(t) {
+let blobUrl = null;
+async function play(t) {
   if (playing === t) { audio.paused ? audio.play() : audio.pause(); return; }
   playing = t;
-  audio.src = songUrl(t); audio.play().catch(() => {});
+  const local = await cachedUrl(t); if (playing !== t) { if (local) URL.revokeObjectURL(local); return; }
+  if (blobUrl) URL.revokeObjectURL(blobUrl); blobUrl = local;
+  audio.src = local || songUrl(t); audio.play().catch(() => {});
   $("player").hidden = false;
   $("p-cover").src = t.cover; $("p-title").textContent = t.t; $("p-coll").textContent = t.coll;
   $("p-trim").href = `/tools/trim/?ia=${encodeURIComponent(t.ia)}&f=${encodeURIComponent(t.f)}&t=${encodeURIComponent(t.t)}`;
@@ -229,3 +275,4 @@ $("q").addEventListener("input", (e) => {
 });
 
 init();
+if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));

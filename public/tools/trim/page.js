@@ -1,4 +1,9 @@
 import { audioCtx, decode, cut, toWav, toMp3, fmtTime, parseTime, mb, saveLink, dropZone, modeButton } from "/tools/audio.js?v=1";
+// iPhone ringtones (.m4r = AAC in an MP4 box) need the browser's own AAC encoder; offer it only where it exists
+let aac = null;
+import("/tools/vendor/aac.js").then(async (m) => {
+  if (await m.aacSupported(44100, 2)) { aac = m; const o = document.createElement("option"); o.value = "m4r"; o.textContent = "iPhone ringtone (.m4r)"; document.getElementById("fmt").append(o); }
+}).catch(() => {});
 modeButton();
 const $ = (id) => document.getElementById(id);
 const cv = $("wave"), g = cv.getContext("2d");
@@ -70,6 +75,7 @@ for (const [id, set] of [["start", (v) => (a = Math.max(0, Math.min(v, b - 0.2))
   $(id).addEventListener("change", (e) => { const v = parseTime(e.target.value); if (!isNaN(v)) set(v); stop(); sync(); });
 document.querySelectorAll(".quick button").forEach((btn) => btn.onclick = () => {
   const n = +btn.dataset.len; if (!buf) return;
+  if (btn.dataset.ring) { $("fin").value = "0.5"; $("fout").value = "2"; if (aac) $("fmt").value = "m4r"; }
   if (!n) { a = 0; b = buf.duration; } else { b = Math.min(buf.duration, a + n); if (b - a < n) a = Math.max(0, b - n); }
   stop(); sync();
 });
@@ -96,6 +102,10 @@ $("run").onclick = async () => {
   try {
     let out, ext, type;
     if (f === "wav") { out = toWav(clip); ext = "wav"; type = "audio/wav"; }
+    else if (f === "m4r") {
+      if (b - a > 40) { $("status2").textContent = "iPhone ringtones can be up to 40 seconds. Shorten the clip and try again."; $("run").disabled = false; return; }
+      out = await aac.toAac(clip, (p) => ($("status2").textContent = `Making your ringtone… ${Math.round(p * 100)}%`)); ext = "m4r"; type = "audio/mp4";
+    }
     else { out = await toMp3(clip, f === "mp3-320" ? 320 : 192, (p) => ($("status2").textContent = `Making your clip… ${Math.round(p * 100)}%`)); ext = "mp3"; type = "audio/mpeg"; }
     const nm = (t) => { t = Math.round(t); return `${Math.floor(t / 60)}m${String(t % 60).padStart(2, "0")}s`; };
     const file = `${name} (${nm(a)}-${nm(b)}).${ext}`;

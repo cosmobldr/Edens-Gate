@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Online Tuner & Metronome — guitar, bass, ukulele · Eden's Gate</title>
+<meta name="description" content="A free tuner that listens through your microphone, plus a metronome with tap tempo. Works on phones and computers. Nothing is recorded or uploaded.">
+<meta property="og:title" content="Free Online Tuner & Metronome · Eden's Gate">
+<meta property="og:description" content="A free tuner that listens through your microphone, plus a metronome with tap tempo. Works on phones and computers. Nothing is recorded or uploaded.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://edensgate.art/tools/tuner/">
+<meta property="og:site_name" content="Eden's Gate">
+<meta property="og:image" content="https://edensgate.art/share.jpg?v=2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#12302c">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem("egMode");if(!m){var h=new Date().getHours();m=(h>=6&&h<18)?"day":"night"}document.documentElement.dataset.theme=m}catch(e){document.documentElement.dataset.theme="night"}</script>
+<link rel="stylesheet" href="/models/models.css?v=1">
+<link rel="stylesheet" href="/tools/tools.css?v=5">
+</head>
+<body>
+<header class="top"><a class="back" href="/tools/">← All tools</a><button id="mode" class="mode" type="button" aria-label="Switch day and night">☾</button></header>
+<section class="hero">
+  <p class="eyebrow"><span aria-hidden="true">✦</span> The Workshop <span aria-hidden="true">✦</span></p>
+  <h1>Tuner &amp; Metronome</h1>
+  <p class="about">Tune any instrument with your phone or computer's microphone, then keep time with the metronome. <b>Nothing is recorded or sent anywhere.</b></p>
+</section>
+<main class="bench">
+  <section class="card-x tuner">
+    <h3>Tuner</h3>
+    <div class="note-big" id="note">–</div>
+    <div class="cents" aria-hidden="true"><span class="mark flat">♭</span><span class="mark mid"></span><span class="mark sharp">♯</span><i id="needle2"></i></div>
+    <p class="tune-say" id="say">Press Start and play one note.</p>
+    <p class="hz" id="hz"></p>
+    <div class="go">
+      <button id="mic" class="btn" type="button">🎤 Start tuner</button>
+      <label class="pno">A = <input id="ref" type="number" min="415" max="466" value="440"> Hz</label>
+    </div>
+    <p class="strings">Guitar: <b>E A D G B E</b> · Bass: <b>E A D G</b> · Ukulele: <b>G C E A</b> · Violin: <b>G D A E</b></p>
+  </section>
+  <section class="card-x metro">
+    <h3>Metronome</h3>
+    <div class="bpm-big"><span id="bpmv">100</span> <small>BPM</small></div>
+    <input id="bpm" class="slider" type="range" min="30" max="240" value="100" aria-label="Tempo in beats per minute">
+    <div class="beats" id="dots" aria-hidden="true"></div>
+    <div class="go">
+      <button id="metro" class="btn" type="button">▶ Start</button>
+      <button id="tap" class="btn ghost" type="button">Tap tempo</button>
+      <button id="minus" class="chip" type="button" aria-label="Slower">−</button><button id="plus" class="chip" type="button" aria-label="Faster">+</button>
+      <label class="pno">Beats per bar <select id="per"><option>2</option><option>3</option><option selected>4</option><option>6</option></select></label>
+    </div>
+  </section>
+</main>
+<footer class="foot"><span>Eden's Gate · The Workshop</span><a href="/tools/">All free tools</a><a href="/models/">Free 3D models</a><a href="/">Free music</a></footer>
+<script type="module" src="/tools/tuner/page.js?v=1"></script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

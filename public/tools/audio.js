@@ -67,6 +67,7 @@ export function dropZone(zone, input, onFiles) {
   addEventListener("dragover", (e) => e.preventDefault()); addEventListener("drop", (e) => e.preventDefault());
 }
 export function modeButton() {
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js").catch(() => {});   // pages you visit keep working offline
   const b = document.getElementById("mode"), r = document.documentElement; if (!b) return;
   const s = () => (b.textContent = r.dataset.theme === "day" ? "☾" : "☀"); s();
   b.onclick = () => { r.dataset.theme = r.dataset.theme === "day" ? "night" : "day"; s(); try { localStorage.setItem("egMode", r.dataset.theme); } catch (e) {} };

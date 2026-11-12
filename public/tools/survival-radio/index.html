@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Survival Radio — build a free solar-powered offline radio · Eden's Gate</title>
+<meta name="description" content="Free plans to build a solar-charged radio that plays your music library with no internet or power grid. Parts list, wiring, two 3D-printable cases and wooden box plans.">
+<meta property="og:title" content="Survival Radio · Eden's Gate">
+<meta property="og:description" content="Free plans to build a solar-charged radio that plays your music library with no internet or power grid. Parts list, wiring, two 3D-printable cases and wooden box plans.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://edensgate.art/tools/survival-radio/">
+<meta property="og:site_name" content="Eden's Gate">
+<meta property="og:image" content="https://edensgate.art/share.jpg?v=2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#12302c">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script>try{var m=localStorage.getItem("egMode");if(!m){var h=new Date().getHours();m=(h>=6&&h<18)?"day":"night"}document.documentElement.dataset.theme=m}catch(e){document.documentElement.dataset.theme="night"}</script>
+<link rel="stylesheet" href="/models/models.css?v=1">
+<link rel="stylesheet" href="/tools/tools.css?v=4">
+</head>
+<body>
+<header class="top"><a class="back" href="/tools/">← All tools</a><button id="mode" class="mode" type="button" aria-label="Switch day and night">☾</button></header>
+<section class="hero">
+  <p class="eyebrow"><span aria-hidden="true">✦</span> The Workshop <span aria-hidden="true">✦</span></p>
+  <h1>Survival Radio</h1>
+  <p class="lede">Music when the grid goes down.</p>
+  <p class="about">Build a solar-charged radio that plays a whole library of music with <b>no internet, no cell signal and no power grid</b>. Turn the knob to change channels. Every radio you build plays the same song at the same moment, like real radio. Free plans, three case designs, no account needed.</p>
+  <p class="note center-note">Version 1: the first radio is being built now. Parts and steps may get small fixes as it's tested.</p>
+</section>
+<main class="bench guide">
+  <ol class="steps">
+    <li>
+      <h2>How it works</h2>
+      <p>A small computer board reads songs from a memory card and plays them through two speakers. A clock chip with its own coin battery keeps exact time for years, so the radio always knows "what's playing now," even after months in a drawer. A battery pack runs it, and a small waterproof solar panel or any USB-C charger tops it up.</p>
+      <p>Songs go on the memory card in folders, and <b>each folder is a channel</b>. Need music? Everything in <a href="/">the Eden's Gate vault</a> is free to download and use.</p>
+    </li>
+    <li>
+      <h2>Pick a case</h2>
+      <div class="cases">
+        <figure class="case"><img src="/tools/survival-radio/stereo.webp" alt="Stereo boombox case, 3D printed, two round speaker grilles and a knob in the middle" width="630" height="540" loading="lazy">
+          <figcaption><b>Stereo boombox</b><span>3D printed · 214 × 104 × 64 mm · two speakers</span><a class="btn" href="/tools/survival-radio/files/survival-radio-stereo-case.zip" download>Download STL files</a></figcaption></figure>
+        <figure class="case"><img src="/tools/survival-radio/compact.webp" alt="Compact case, 3D printed, one round speaker grille and a knob on the right" width="630" height="540" loading="lazy">
+          <figcaption><b>Compact</b><span>3D printed · 160 × 104 × 64 mm · one speaker</span><a class="btn" href="/tools/survival-radio/files/survival-radio-compact-case.zip" download>Download STL files</a></figcaption></figure>
+        <figure class="case"><svg viewBox="0 0 630 540" role="img" aria-label="Wooden box radio: a pine and plywood box with two round speaker holes and a knob, with a handle on top">
+            <rect width="630" height="540" fill="#e6e9e4"/>
+            <rect x="215" y="118" width="200" height="30" rx="8" fill="#5a4632"/>
+            <path d="M120 170 L510 170 L540 150 L150 150 Z" fill="#d8b07a"/><path d="M510 170 L540 150 L540 330 L510 350 Z" fill="#b98b52"/>
+            <rect x="120" y="170" width="390" height="180" fill="#e9c896" stroke="#8a6438" stroke-width="3"/>
+            <circle cx="220" cy="260" r="56" fill="#2b2b2b"/><circle cx="410" cy="260" r="56" fill="#2b2b2b"/><circle cx="220" cy="260" r="20" fill="#444"/><circle cx="410" cy="260" r="20" fill="#444"/>
+            <circle cx="315" cy="260" r="16" fill="#333"/><circle cx="525" cy="245" r="10" fill="#333"/>
+            <path d="M120 360 L510 360" stroke="#c9ccc6" stroke-width="10" stroke-linecap="round"/>
+          </svg>
+          <figcaption><b>Wooden box</b><span>No printer needed · pine + plywood · 10" × 5" × 4"</span><a class="btn" href="/tools/survival-radio/files/survival-radio-wooden-box-plans.pdf" download>Download plans (PDF)</a></figcaption></figure>
+      </div>
+      <p>The wooden box plans include a cut list and full-size drilling templates you print, tape on and drill through. The printed cases print without supports; most local libraries, schools and print shops can print them if you don't have a printer.</p>
+    </li>
+    <li>
+      <h2>Get the parts</h2>
+      <p>About <b>$145</b> for the stereo build, <b>$143</b> for one speaker, or about <b>$118</b> without the solar parts. Prices from Adafruit, checked November 2026; most of it ships in one order.</p>
+      <div class="table-wrap"><table class="parts">
+        <thead><tr><th>Part</th><th>Why</th><th>Price</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.adafruit.com/product/5483">ESP32-S3 TFT Feather (4MB / 2MB PSRAM)</a></td><td>The brain, with a small screen for the channel and song</td><td>$24.95</td></tr>
+          <tr><td><a href="https://www.adafruit.com/product/5188">DS3231 Precision RTC, STEMMA QT</a> + <a href="https://www.adafruit.com/products/380">CR1220 coin cell</a></td><td>Keeps exact time with the power off</td><td>$13.95 + $0.95</td></tr>
+          <tr><td><a href="https://www.adafruit.com/product/254">MicroSD card breakout board+</a></td><td>Reads the song card</td><td>$7.50</td></tr>
+          <tr><td><a href="https://www.bhphotovideo.com/c/product/1515269-REG/sandisk_sdsquns_032g_gn3ma_32gb_80mb_s_uhs_i_class.html">32 GB microSD card</a> (any name brand)</td><td>Holds the songs (32 GB is roughly 6,000+ songs)</td><td>about $10</td></tr>
+          <tr><td><a href="https://www.adafruit.com/product/6513">Stereo I2S 3W amplifier</a></td><td>Drives the speakers</td><td>$9.95</td></tr>
+          <tr><td><a href="https://www.adafruit.com/product/1314">3" round speaker, 4 ohm 3W</a> (1 or 2)</td><td>The sound</td><td>$1.95 each</td></tr>
+          <tr><td><a href="https://www.adafruit.com/product/5880">I2C rotary encoder with encoder</a> + <a href="https://www.adafruit.com/product/2055">35 mm knob</a></td><td>Turn for channel, press to play/pause</td><td>$7.95 + $0.95</td></tr>
+          <tr><td><a href="https://www.adafruit.com/product/4210">STEMMA QT cable, 100 mm</a> (2)</td><td>Plugs the clock and knob in, no soldering</td><td>$0.95 each</td></tr>
+          <tr><td><a href="https://www.adafruit.com/product/354">Lithium ion pack, 3.7V 4400 mAh</a></td><td>The battery (protection circuit built in)</td><td>$19.95</td></tr>
+          <tr><td><a href="https://www.adafruit.com/product/4755">USB / DC / solar charger, bq24074</a></td><td>Charges from USB-C or the panel</td><td>$14.95</td></tr>
+          <tr><td><a href="https://www.adafruit.com/product/5366">6V 2W solar panel, waterproof</a></td><td>Charges with no grid</td><td>$20.95</td></tr>
+          <tr><td><a href="https://www.adafruit.com/product/4287">3.5/1.1 to 5.5/2.1 mm DC adapter</a> + <a href="https://www.adafruit.com/product/5607">panel-mount DC socket cable</a></td><td>The solar socket on the side</td><td>$1.50 + $4.95</td></tr>
+          <tr><td><a href="https://www.adafruit.com/product/3221">Mini toggle switch</a></td><td>Power on/off</td><td>$0.95</td></tr>
+        </tbody></table></div>
+      <p><b>Tools:</b> a soldering iron (a <a href="https://ameridroid.com/products/pinecil-v2-soldering-iron">Pinecil</a> is small and runs from a USB-C laptop charger), <a href="https://www.adafruit.com/product/1930">solder</a>, <a href="https://www.adafruit.com/product/3174">hook-up wire</a>, <a href="https://www.adafruit.com/product/527Beginner?hidden=yes&amp;main_page=product_info&amp;part_id=527">wire strippers</a>, an <a href="https://www.adafruit.com/product/3299">M2.5 standoff set</a> and an <a href="https://www.amazon.com/Stainless-Steel-Socket-Screws-Assortment/dp/B01N3YT1OZ">M3 screw kit</a>. The soldering is mostly header pins: about half an hour, even for a first-timer.</p>
+    </li>
+    <li>
+      <h2>Wire it up</h2>
+      <p>Wires go between the labels printed on each board.</p>
+      <div class="table-wrap"><table class="parts">
+        <thead><tr><th>From</th><th>To</th></tr></thead>
+        <tbody>
+          <tr><td>Battery plug</td><td>Charger <b>BAT</b> socket</td></tr>
+          <tr><td>Solar panel → adapter → panel socket</td><td>Socket's plug into the charger's <b>DC</b> jack</td></tr>
+          <tr><td>Charger <b>LOAD +</b></td><td>Toggle switch, then on to Feather <b>USB</b> pin and amplifier <b>VIN</b></td></tr>
+          <tr><td>Charger <b>LOAD −</b> (ground)</td><td>Feather <b>GND</b>, amplifier <b>GND</b>, SD board <b>GND</b></td></tr>
+          <tr><td>SD board <b>CLK · DO · DI · CS · 3v</b></td><td>Feather <b>SCK · MI · MO · D10 · 3V</b></td></tr>
+          <tr><td>Amplifier <b>BCLK · LRC · DIN</b></td><td>Feather <b>D9 · D6 · D5</b></td></tr>
+          <tr><td>Speakers</td><td>Amplifier's screw terminals (left and right)</td></tr>
+          <tr><td>Feather <b>STEMMA QT</b> port</td><td>Clock board, then clock board's second port to the knob board (QT cables)</td></tr>
+        </tbody></table></div>
+      <p>Charging uses the charger's own USB-C port (or the solar socket). The Feather's USB-C port is only for loading the software.</p>
+    </li>
+    <li>
+      <h2>Load the songs</h2>
+      <p>On your computer, make one folder per channel on the memory card, like <b>Lo-Fi</b>, <b>Rock</b>, <b>Stories</b>, and put MP3s inside. Folder names become channel names on the screen. Tip: 128 kbps MP3s fit about twice as many songs as 320 kbps ones; the <a href="/tools/convert/">audio converter</a> can shrink them.</p>
+    </li>
+    <li>
+      <h2>Load the software</h2>
+      <p class="note">Coming soon. The radio's software is being tested on the first build right now, and it gets posted here, free, as soon as it plays reliably. It won't be published untested.</p>
+    </li>
+  </ol>
+  <section class="terms">
+    <h2>Battery safety</h2>
+    <p>Use a protected lithium pack like the one listed. Don't charge it below freezing or leave it baking on a dashboard. Only the solar panel lives outside; keep the radio itself dry. A swollen or damaged battery gets replaced, never charged.</p>
+    <p>The plans, case files and software are free to use, change, share and sell. No credit needed.</p>
+  </section>
+</main>
+<footer class="foot"><span>Eden's Gate · The Workshop</span><a href="/tools/">All free tools</a><a href="/models/">Free 3D models</a><a href="/">Free music</a></footer>
+<script type="module">import { modeButton } from "/tools/audio.js?v=1"; modeButton();</script>
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

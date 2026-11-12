@@ -1,4 +1,4 @@
-import { STYLES } from "/coloring/pages.js?v=5";
+import { STYLES } from "/coloring/pages.js?v=6";
 import { modeButton } from "/tools/audio.js?v=1";
 modeButton();
 const $ = (id) => document.getElementById(id);

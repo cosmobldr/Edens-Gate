@@ -89,43 +89,6 @@ export function mandala(seed) {
   return wrap(out.join(""), `Mandala No. ${seed}`);
 }
 
-function flower(x, y, s, R) {
-  const rot = uni(R, 0, 6.28), o = [];
-  for (let i = 0; i < 5; i++) {
-    const a = rot + i * 2 * PI / 5, cl = pol(x, y, s * 1.15, a - 0.55), cr = pol(x, y, s * 1.15, a + 0.55), notch = pol(x, y, s * 0.82, a);
-    o.push(`<path d="M${P(x, y)} C${P(...pol(x, y, s * 0.5, a - 0.9))} ${P(...cl)} ${P(...pol(x, y, s, a - 0.12))} L${P(...notch)} L${P(...pol(x, y, s, a + 0.12))} C${P(...cr)} ${P(...pol(x, y, s * 0.5, a + 0.9))} ${P(x, y)}Z"/>`);
-  }
-  o.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(s * 0.18).toFixed(1)}"/>`);
-  for (let i = 0; i < 5; i++) { const [xx, yy] = pol(x, y, s * 0.38, rot + (i + 0.5) * 2 * PI / 5); o.push(`<circle cx="${xx.toFixed(1)}" cy="${yy.toFixed(1)}" r="${(s * 0.05).toFixed(1)}" fill="#111"/>`); }
-  return o.join("");
-}
-export function sakura(seed) {
-  const R = rng(seed * 104729 + 3), segs = [], blossoms = [];
-  const branch = (x, y, a, length, width, depth) => {
-    const pts = [[x, y]]; let cur = a;
-    for (let i = 0; i < 4; i++) { cur += uni(R, -0.18, 0.18); x += length / 4 * Math.cos(cur); y += length / 4 * Math.sin(cur); pts.push([x, y]); }
-    segs.push([pts, width]);
-    if (depth === 0 || width < 5) { blossoms.push([x, y]); return; }
-    const kids = pick(R, [2, 2, 3]);
-    for (let k = 0; k < kids; k++) { const [bx, by] = pts[pick(R, [2, 3, 4])]; branch(bx, by, cur + (R() < 0.5 ? -1 : 1) * uni(R, 0.35, 0.85), length * uni(R, 0.55, 0.75), width * 0.62, depth - 1); }
-    if (R() < 0.7) blossoms.push(pts[2]);
-  };
-  const fromLeft = R() < 0.5;
-  branch(fromLeft ? 28 : W - 28, uni(R, 760, 900), fromLeft ? -0.62 + uni(R, -0.12, 0.12) : PI + 0.62 + uni(R, -0.12, 0.12), 420, 30, 4);
-  const path = (pts) => "M" + pts.map((p) => P(...p)).join(" L");
-  let lim = segs.map(([p, w]) => `<path d="${path(p)}" stroke-width="${(w + SW * 2).toFixed(1)}"/>`).join("");
-  lim += segs.map(([p, w]) => `<path d="${path(p)}" stroke="#fff" stroke-width="${w.toFixed(1)}"/>`).join("");
-  const pts = [];
-  for (const [x, y] of blossoms) for (let k = 0, n = pick(R, [2, 3, 3]); k < n; k++) {
-    const px = x + uni(R, -45, 45), py = y + uni(R, -45, 45), s = uni(R, 24, 38);
-    if (px > 60 && px < W - 60 && py > 70 && py < H - 130 && pts.every(([qx, qy, qs]) => (px - qx) ** 2 + (py - qy) ** 2 > (s + qs) ** 2 * 0.85)) pts.push([px, py, s]);
-  }
-  let fl = pts.map(([x, y, s]) => `<g fill="#fff">${flower(x, y, s, R)}</g>`).join("");
-  for (let i = 0; i < 16; i++) { const x = uni(R, 70, W - 70), y = uni(R, 90, H - 150), a = uni(R, 0, 6.28); if (pts.every(([qx, qy, qs]) => (x - qx) ** 2 + (y - qy) ** 2 > (qs + 34) ** 2)) fl += `<g fill="#fff">${petal(x, y, 0, 26, a, 0.5)}</g>`; }
-  const id = `c${seed}`;
-  return wrap(`<clipPath id="${id}"><rect x="28" y="28" width="${W - 56}" height="${H - 104}" rx="18"/></clipPath><g clip-path="url(#${id})">${lim}${fl}</g><rect x="28" y="28" width="${W - 56}" height="${H - 104}" rx="18"/>`, `Sakura No. ${seed}`);
-}
-
 export function tiles(seed) {
   const R = rng(seed * 15485863 + 7), s = pick(R, [85, 85, 106]), cols = Math.floor((W - 60) / s), rows = Math.floor((H - 120) / s), x0 = (W - cols * s) / 2, y0 = 40, o = [];
   o.push(`<rect x="${x0}" y="${y0}" width="${cols * s}" height="${rows * s}"/>`);
@@ -138,25 +101,77 @@ export function tiles(seed) {
   return wrap(o.join(""), `Maze Tiles No. ${seed}`);
 }
 
-export function stars(seed) {   // a night sky: crescent moon, stars, planets and a few clouds
-  const R = rng(seed * 2654435761 + 11), o = [], placed = [];
-  const free = (x, y, r) => placed.every(([a, b, c]) => (x - a) ** 2 + (y - b) ** 2 > (r + c + 10) ** 2);
-  const mx = uni(R, 220, 630), my = uni(R, 200, 360), mr = uni(R, 110, 150);
-  o.push(`<path d="M${P(mx, my - mr)} A${mr},${mr} 0 1 0 ${P(mx, my + mr)} A${mr * 0.55},${mr} 0 1 1 ${P(mx, my - mr)}Z"/>`); placed.push([mx, my, mr]);
-  for (let i = 0; i < 3; i++) { const r = uni(R, 34, 58), x = uni(R, 70 + r * 1.8, W - 70 - r * 1.8), y = uni(R, 480, 830); if (!free(x, y, r + 30)) continue; placed.push([x, y, r + 30]);
-    o.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}"/><ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${(r * 1.8).toFixed(1)}" ry="${(r * 0.45).toFixed(1)}" transform="rotate(${uni(R, -25, 25).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})"/>`); }
-  for (let tries = 0; tries < 500 && placed.length < 28; tries++) {
-    const r = uni(R, 24, 52), x = uni(R, 70, W - 70), y = uni(R, 70, H - 150); if (!free(x, y, r)) continue; placed.push([x, y, r]);
-    const pts = []; for (let k = 0; k < 10; k++) pts.push(pol(x, y, k % 2 ? r * 0.45 : r, -PI / 2 + k * PI / 5));
-    o.push(`<path d="M${pts.map((p) => P(...p)).join(" L")}Z"/>`);
+// ---------- stained glass: Voronoi panes with thick "lead" lines ----------
+function clipHalf(poly, ax, ay, bx, by) {   // keep the side of the perpendicular bisector closer to a
+  const mx = (ax + bx) / 2, my = (ay + by) / 2, nx = bx - ax, ny = by - ay, out = [];
+  const side = ([x, y]) => (x - mx) * nx + (y - my) * ny;
+  for (let i = 0; i < poly.length; i++) {
+    const p = poly[i], q = poly[(i + 1) % poly.length], sp = side(p), sq = side(q);
+    if (sp <= 0) out.push(p);
+    if ((sp < 0 && sq > 0) || (sp > 0 && sq < 0)) { const t = sp / (sp - sq); out.push([p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]); }
   }
-  for (let i = 0; i < 2; i++) { const x = uni(R, 160, W - 260), y = uni(R, 880, 930); let d = `M${P(x, y)}`; for (let k = 0; k < 4; k++) d += ` a${30 + k * 6},${28 + k * 4} 0 0 1 ${55 + k * 5},0`; o.push(`<path d="${d} L${P(x, y)}Z"/>`); }
-  return wrap(o.join(""), `Night Sky No. ${seed}`);
+  return out;
+}
+function voronoi(sites, box) {
+  return sites.map(([ax, ay], i) => { let poly = box.slice(); sites.forEach(([bx, by], j) => { if (i !== j && poly.length) poly = clipHalf(poly, ax, ay, bx, by); }); return poly; });
+}
+const centroid = (poly) => { let x = 0, y = 0; for (const p of poly) { x += p[0]; y += p[1]; } return [x / poly.length, y / poly.length]; };
+function inset(poly, d) { const [cx, cy] = centroid(poly); return poly.map(([x, y]) => { const dx = x - cx, dy = y - cy, L = Math.hypot(dx, dy) || 1, k = Math.max(0, (L - d) / L); return [cx + dx * k, cy + dy * k]; }); }
+export function glass(seed) {
+  const R = rng(seed * 48271 + 5), x0 = 50, y0 = 50, x1 = W - 50, y1 = H - 130;
+  const mode = pick(R, ["rose", "rose", "scatter", "arch"]), arch = mode === "arch", box = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+  const rcx = W / 2, rcy = (y0 + y1) / 2, RR = Math.min(x1 - x0, y1 - y0) / 2 - 20;
+  let sites;
+  if (mode === "rose") {
+    const sym = pick(R, [8, 10, 12]), rings = [[0.24, sym], [0.5, sym * 2], [0.78, sym * 2]], tw = pick(R, [0, 0.5]);
+    sites = [[rcx, rcy]];
+    rings.forEach(([f, m], ri) => { for (let i = 0; i < m; i++) sites.push(pol(rcx, rcy, RR * f, (i + (ri % 2 ? tw : 0)) * 2 * PI / m)); });
+    for (let i = 0; i < 16; i++) sites.push(pol(rcx, rcy, RR * 1.35, i * 2 * PI / 16));
+    for (const [x, y] of [[x0 + 40, y0 + 40], [x1 - 40, y0 + 40], [x0 + 40, y1 - 40], [x1 - 40, y1 - 40]]) sites.push([x, y]);
+  } else {
+    sites = Array.from({ length: Math.floor(uni(R, 38, 70)) }, () => [uni(R, x0, x1), uni(R, y0, y1)]);
+    for (let it = 0; it < 3; it++) sites = voronoi(sites, box).map((c, i) => (c.length ? centroid(c) : sites[i]));   // relax for even panes
+  }
+  const cells = voronoi(sites, box), o = [];
+  const id = `g${seed}`, shape = arch
+    ? `M${x0},${y1} L${x0},${y0 + 200} A${(x1 - x0) / 2},${200} 0 0 1 ${x1},${y0 + 200} L${x1},${y1}Z`
+    : `M${x0},${y0} H${x1} V${y1} H${x0}Z`;
+  o.push(`<clipPath id="${id}"><path d="${shape}"/></clipPath><g clip-path="url(#${id})" stroke-width="7">`);
+  for (const c of cells) if (c.length > 2) {
+    o.push(`<path d="M${c.map((p) => P(...p)).join(" L")}Z"/>`);
+    const a = c.reduce((s, p, i) => { const q = c[(i + 1) % c.length]; return s + p[0] * q[1] - q[0] * p[1]; }, 0) / 2;
+    if (Math.abs(a) > 9000 && R() < 0.35) { const ins = inset(c, 22); o.push(`<path stroke-width="3.2" d="M${ins.map((p) => P(...p)).join(" L")}Z"/>`); }
+  }
+  if (mode === "rose") o.push(`<circle cx="${rcx}" cy="${rcy}" r="${(RR * 1.06).toFixed(1)}" stroke-width="10"/>`);
+  o.push(`</g><path d="${shape}" stroke-width="12"/>`);
+  return wrap(o.join(""), `Stained Glass No. ${seed}`);
+}
+
+// ---------- star tiles: interlocking 8-point stars and crosses (Moroccan / Islamic style) ----------
+export function startiles(seed) {
+  // 8-point stars whose side tips touch their neighbours; the gaps between four stars become small squares (khatam pattern)
+  const R = rng(seed * 69621 + 9), s = pick(R, [130, 150, 170, 200]), o = [];
+  const cols = Math.ceil((W - 80) / s) + 2, rows = Math.ceil((H - 160) / s) + 2, ox = W / 2 - Math.floor(cols / 2) * s, oy = (H - 80) / 2 - Math.floor(rows / 2) * s;
+  const id = `t${seed}`, inner = pick(R, [0.72, 0.76, 0.8]), fill = pick(R, ["ring", "petals", "star", "rosette"]), half = s * 0.2071 / Math.SQRT2;
+  o.push(`<clipPath id="${id}"><rect x="40" y="40" width="${W - 80}" height="${H - 160}"/></clipPath><g clip-path="url(#${id})">`);
+  for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+    const cx = ox + i * s, cy = oy + j * s, r = s / 2;
+    o.push(star(cx, cy, r, inner, 8, 0));
+    if (fill === "ring") o.push(`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(r * inner * 0.7).toFixed(1)}"/><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(r * 0.12).toFixed(1)}"/>`);
+    else if (fill === "petals") { for (let k = 0; k < 8; k++) o.push(petal(cx, cy, r * 0.1, r * inner * 0.92, k * PI / 4 + PI / 8, 0.24)); o.push(`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(r * 0.1).toFixed(1)}"/>`); }
+    else if (fill === "star") o.push(star(cx, cy, r * inner * 0.8, 0.55, 8, PI / 8), `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(r * 0.14).toFixed(1)}"/>`);
+    else { o.push(`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(r * inner * 0.75).toFixed(1)}"/>`); for (let k = 0; k < 8; k++) { const [x, y] = pol(cx, cy, r * inner * 0.45, k * PI / 4); o.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(r * inner * 0.22).toFixed(1)}"/>`); } }
+    // the gap between four stars: a small square whose corners meet the stars' diagonal tips
+    const gx = cx + s / 2, gy = cy + s / 2;
+    o.push(`<rect x="${(gx - half).toFixed(1)}" y="${(gy - half).toFixed(1)}" width="${(half * 2).toFixed(1)}" height="${(half * 2).toFixed(1)}"/>`);
+  }
+  o.push(`</g><rect x="40" y="40" width="${W - 80}" height="${H - 160}" stroke-width="6"/>`);
+  return wrap(o.join(""), `Star Tiles No. ${seed}`);
 }
 
 export const STYLES = {
   mandala: { name: "Mandalas", fn: mandala, blurb: "Calm, detailed, great for grown-ups. 17 ring patterns, every number different" },
-  sakura: { name: "Cherry Blossoms", fn: sakura, blurb: "Branches full of flowers" },
-  stars: { name: "Night Sky", fn: stars, blurb: "Moons, stars and planets, big shapes for little hands" },
+  glass: { name: "Stained Glass", fn: glass, blurb: "Bold panes like a church window. Big shapes, easy for any age" },
+  startiles: { name: "Star Tiles", fn: startiles, blurb: "Interlocking stars like Moroccan tilework" },
   tiles: { name: "Maze Tiles", fn: tiles, blurb: "Bold curvy paths, quick to color" },
 };

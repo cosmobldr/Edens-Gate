@@ -169,9 +169,108 @@ export function startiles(seed) {
   return wrap(o.join(""), `Star Tiles No. ${seed}`);
 }
 
+
+// ---------- optical illusions: they appear as you color ----------
+function wrapTip(body, title, tip) {
+  return wrap(body + `</g><text x="${W / 2}" y="${H - 66}" text-anchor="middle" font-family="Georgia, serif" font-size="21" fill="#222" stroke="none">${tip}</text><g>`, title);
+}
+const DOT = (x, y) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" fill="#111" stroke="none"/>`;
+function bulge(R) {
+  const cx = W / 2, cy = 485, half = 360, N = pick(R, [12, 14, 16]), cell = 2 * half / N, amt = uni(R, 0.28, 0.42), rad = half * uni(R, 0.8, 1.0);
+  const bx = cx + uni(R, -90, 90), by = cy + uni(R, -90, 90);
+  const map = (x, y) => { const dx = x - bx, dy = y - by, d = Math.hypot(dx, dy); if (d >= rad || d === 0) return [x, y];
+    const t = d / rad, k = Math.pow(t, 1 - amt) / t; return [bx + dx * k, by + dy * k]; };
+  const o = [];
+  for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
+    const x0 = cx - half + i * cell, y0 = cy - half + j * cell, pts = [];
+    for (let t = 0; t < 4; t++) pts.push(map(x0 + cell * t / 4, y0));
+    for (let t = 0; t < 4; t++) pts.push(map(x0 + cell, y0 + cell * t / 4));
+    for (let t = 0; t < 4; t++) pts.push(map(x0 + cell - cell * t / 4, y0 + cell));
+    for (let t = 0; t < 4; t++) pts.push(map(x0, y0 + cell - cell * t / 4));
+    o.push(`<path d="M${pts.map((q) => P(...q)).join(" L")}Z" stroke-width="2.4"/>`);
+    if ((i + j) % 2 === 0) o.push(DOT(...map(x0 + cell / 2, y0 + cell / 2)));
+  }
+  return [o.join(""), "Bulge", "Color every square with a dot black, and watch the middle swell toward you."];
+}
+function lines3d(R) {
+  // each stripe is lifted by the height of a hidden smooth shape; lift stays under the stripe gap per step so lines never cross
+  const shape = pick(R, ["dome", "ring", "two", "star", "wave"]), cx = W / 2, cy = 460, gap = pick(R, [14, 16, 18]);
+  const sm = (t) => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
+  const hgt = (x, y) => {
+    const u = (x - cx) / 280, v = (y - cy) / 280, d = Math.hypot(u, v);
+    if (shape === "dome") return sm((1 - d) / 0.6) * Math.sqrt(Math.max(0, 1 - d * d));
+    if (shape === "ring") return sm(1 - Math.abs(d - 0.62) / 0.3);
+    if (shape === "two") return Math.max(sm(1 - Math.hypot(u + 0.42, v + 0.25) / 0.48), sm(1 - Math.hypot(u - 0.45, v - 0.3) / 0.42));
+    if (shape === "wave") return sm(1 - d) * (0.5 + 0.5 * Math.cos(d * 9));
+    const ang = Math.atan2(v, u), rr = 0.6 + 0.3 * Math.cos(5 * (ang + PI / 2)); return sm((rr - d) / 0.35);
+  };
+  const A = gap * 4.2, o = [];
+  let prev = null;
+  for (let y = 70; y <= H - 150; y += gap) {
+    // a stripe can touch the one above but never cross it, like a hill hiding what's behind it
+    const pts = []; let i = 0; for (let x = 50; x <= W - 50; x += 5, i++) { let yy = y - A * hgt(x, y); if (prev) yy = Math.max(yy, prev[i] + 2.5); pts.push([x, yy]); }
+    prev = pts.map((q) => q[1]);
+    o.push(`<path d="M${pts.map((q) => P(...q)).join(" L")}" stroke-width="2.2"/>`);
+  }
+  return [`<clipPath id="l3"><rect x="50" y="20" width="${W - 100}" height="${H - 160}"/></clipPath><g clip-path="url(#l3)">${o.join("")}</g>`, "3D Lines", "Color the stripes in rainbow order, top to bottom, and a hidden shape rises off the page."];
+}
+function blocks(R) {
+  const s = pick(R, [46, 54, 62]), h = s * Math.sqrt(3) / 2, o = [];
+  for (let row = -1; row * s * 1.5 < H; row++) for (let col = -1; col * h * 2 < W + h * 2; col++) {
+    const cx = col * h * 2 + (row % 2 ? h : 0), cy = row * s * 1.5;
+    const top = [[cx, cy - s], [cx + h, cy - s / 2], [cx, cy], [cx - h, cy - s / 2]];
+    const left = [[cx - h, cy - s / 2], [cx, cy], [cx, cy + s], [cx - h, cy + s / 2]];
+    const right = [[cx + h, cy - s / 2], [cx + h, cy + s / 2], [cx, cy + s], [cx, cy]];
+    for (const f of [top, left, right]) o.push(`<path d="M${f.map((q) => P(...q)).join(" L")}Z" stroke-width="2.6"/>`);
+    const [rx, ry] = centroid(right); o.push(DOT(rx, ry));
+  }
+  return [`<clipPath id="tb"><rect x="40" y="40" width="${W - 80}" height="${H - 170}"/></clipPath><g clip-path="url(#tb)">${o.join("")}</g><rect x="40" y="40" width="${W - 80}" height="${H - 170}" stroke-width="5"/>`, "Tumbling Blocks", "Color every dotted side dark, every top light. Stare: the cubes flip inside out."];
+}
+function twist(R) {
+  // each new shape's corners sit a little way along the previous shape's sides, which makes the whirl
+  const cx = W / 2, cy = 470, sides = pick(R, [4, 4, 6, 3]), steps = pick(R, [20, 24, 28]), t = uni(R, 0.08, 0.12), o = [];
+  const r = sides === 3 ? 430 : sides === 4 ? 440 : 400, a0 = sides === 4 ? PI / 4 : -PI / 2;
+  let poly = Array.from({ length: sides }, (_, k) => pol(cx, cy + (sides === 3 ? 60 : 0), r, a0 + k * 2 * PI / sides));
+  o.push(`<path d="M${poly.map((q) => P(...q)).join(" L")}Z" stroke-width="3"/>`);
+  for (let i = 0; i < steps; i++) {
+    const next = poly.map((p, k) => { const q = poly[(k + 1) % sides]; return [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t]; });
+    o.push(`<path d="M${next.map((q) => P(...q)).join(" L")}Z" stroke-width="2.2"/>`);
+    if (i % 2 === 0) for (let k = 0; k < sides; k++) { const tri = [poly[(k + 1) % sides], next[k], next[(k + 1) % sides]]; o.push(DOT(...centroid(tri))); }
+    poly = next;
+  }
+  return [o.join(""), "Twisting Spiral", "Color the dotted triangles dark and the rest light. It starts to spin."];
+}
+function cafe(R) {
+  const bw = pick(R, [70, 80, 90]), bh = bw * 0.5, mort = 4, rows = Math.floor((H - 200) / bh), shift = [0, 0.25, 0.5, 0.25], o = [];
+  for (let j = 0; j < rows; j++) {
+    const y = 50 + j * bh, off = shift[j % 4] * bw;
+    o.push(`<path d="M40 ${y.toFixed(1)} H${W - 40}" stroke-width="${mort}"/>`);
+    for (let x = 40 - off - bw; x < W - 40; x += bw) {
+      const x0 = Math.max(40, x), x1 = Math.min(W - 40, x + bw);
+      if (x1 - x0 < 4) continue;
+      o.push(`<path d="M${x0.toFixed(1)} ${y.toFixed(1)} V${(y + bh).toFixed(1)}" stroke-width="2.4"/>`);
+      if (Math.round((x + off + bw) / bw) % 2 === 0 && x1 - x0 > 14) o.push(DOT((x0 + x1) / 2, y + bh / 2));
+    }
+  }
+  o.push(`<rect x="40" y="50" width="${W - 80}" height="${rows * bh}" stroke-width="5"/>`);
+  return [o.join(""), "Café Wall", "Color the dotted bricks black. The rows are perfectly straight, but they won't look it."];
+}
+function ripple(R) {
+  const n = pick(R, [16, 20, 24]), cx = W / 2, cy = 470, o = [], c2 = pol(cx, cy, uni(R, 150, 210), uni(R, 0, 2 * PI));
+  for (let i = 1; i <= n; i++) o.push(`<circle cx="${cx}" cy="${cy}" r="${(i * 380 / n).toFixed(1)}" stroke-width="2.4"/>`);
+  for (let i = 1; i <= n; i++) o.push(`<circle cx="${c2[0].toFixed(1)}" cy="${c2[1].toFixed(1)}" r="${(i * 380 / n).toFixed(1)}" stroke-width="2.4"/>`);
+  return [`<clipPath id="rp"><circle cx="${cx}" cy="${cy}" r="385"/></clipPath><g clip-path="url(#rp)">${o.join("")}</g><circle cx="${cx}" cy="${cy}" r="385" stroke-width="5"/>`, "Ripples", "Color it like a checkerboard: two touching spaces never share a color. Then watch it pulse."];
+}
+const ILLUSIONS = [bulge, lines3d, blocks, twist, cafe, ripple];
+export function illusion(seed) {
+  const R = rng(seed * 31337 + 13), [body, name, tip] = ILLUSIONS[(seed - 1) % ILLUSIONS.length](R);
+  return wrapTip(body, `${name} · Illusion No. ${seed}`, tip);
+}
+
 export const STYLES = {
   mandala: { name: "Mandalas", fn: mandala, blurb: "Calm, detailed, great for grown-ups. 17 ring patterns, every number different" },
   glass: { name: "Stained Glass", fn: glass, blurb: "Bold panes like a church window. Big shapes, easy for any age" },
   startiles: { name: "Star Tiles", fn: startiles, blurb: "Interlocking stars like Moroccan tilework" },
+  illusion: { name: "Optical Illusions", fn: illusion, blurb: "They appear as you color. Each page tells you how" },
   tiles: { name: "Maze Tiles", fn: tiles, blurb: "Bold curvy paths, quick to color" },
 };

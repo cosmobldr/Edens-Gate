@@ -19,39 +19,73 @@ function petal(cx, cy, r0, r1, a, w) {
   return `<path d="M${P(x0, y0)} Q${P(...c1)} ${P(x1, y1)} Q${P(...c2)} ${P(x0, y0)}Z"/>`;
 }
 
+function star(cx, cy, r, inner, pts, rot = -PI / 2) {
+  const p = []; for (let k = 0; k < pts * 2; k++) p.push(pol(cx, cy, k % 2 ? r * inner : r, rot + k * PI / pts));
+  return `<path d="M${p.map((q) => P(...q)).join(" L")}Z"/>`;
+}
+function heart(cx, cy, s, a) {
+  const pt = (x, y) => { const c = Math.cos(a), si = Math.sin(a); return P(cx + x * c - y * si, cy + x * si + y * c); };
+  return `<path d="M${pt(0, s * 0.35)} C${pt(-s * 0.9, -s * 0.2)} ${pt(-s * 0.45, -s * 0.95)} ${pt(0, -s * 0.45)} C${pt(s * 0.45, -s * 0.95)} ${pt(s * 0.9, -s * 0.2)} ${pt(0, s * 0.35)}Z"/>`;
+}
+const RINGS = ["petal", "petal", "leaf2", "dots", "scallop", "zig", "arch", "lattice", "teardots", "rays", "waves", "hearts", "triangles", "beads", "lotus", "pinwheel", "stars"];
+
 export function mandala(seed) {
-  const R = rng(seed * 7919 + 1), cx = W / 2, cy = 525, n = pick(R, [8, 10, 12, 16]), out = [];
-  let r = 26; out.push(`<circle cx="${cx}" cy="${cy}" r="${r}"/><circle cx="${cx}" cy="${cy}" r="${(r * 0.45).toFixed(1)}"/>`);
-  const maxr = 378;
-  while (r < maxr - 20) {
-    const kind = pick(R, ["petal", "petal", "dots", "scallop", "zig", "leaf2", "arch"]);
-    const band = r < 200 ? uni(R, 34, 60) : uni(R, 40, 70), r2 = Math.min(maxr, r + band);
-    const k = r > 120 ? n * pick(R, [1, 1, 2]) : n, off = pick(R, [0, PI / k]);
-    if (kind === "petal") {
-      for (let i = 0; i < k; i++) { const a = off + i * 2 * PI / k; out.push(petal(cx, cy, r, r2, a, PI / k * 0.95)); if (band > 42) out.push(petal(cx, cy, r + band * 0.18, r2 - band * 0.28, a, PI / k * 0.45)); }
-    } else if (kind === "leaf2") {
-      for (let i = 0; i < k; i++) { const a = off + i * 2 * PI / k; out.push(petal(cx, cy, r, r2, a - PI / k * 0.35, PI / k * 0.4), petal(cx, cy, r, r2, a + PI / k * 0.35, PI / k * 0.4)); }
-    } else if (kind === "dots") {
-      const rr = (r2 - r) / 2, m = Math.max(k, Math.floor(2 * PI * (r + rr) / (rr * 2.3)));
-      for (let i = 0; i < m; i++) { const [x, y] = pol(cx, cy, r + rr, off + i * 2 * PI / m); out.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(rr * 0.75).toFixed(1)}"/>`); if (rr > 14) out.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(rr * 0.32).toFixed(1)}"/>`); }
-    } else if (kind === "scallop") {
-      const m = k * 2; let d = "";
-      for (let i = 0; i < m; i++) { const a0 = off + i * 2 * PI / m, a1 = a0 + 2 * PI / m, am = (a0 + a1) / 2; const [x0, y0] = pol(cx, cy, r, a0), [x1, y1] = pol(cx, cy, r, a1), c = pol(cx, cy, r2 + (r2 - r) * 0.4, am); d += (i === 0 ? `M${P(x0, y0)} ` : "") + `Q${P(...c)} ${P(x1, y1)} `; }
-      out.push(`<path d="${d}Z"/>`);
-      for (let i = 0; i < m; i++) { const am = off + (i + 0.5) * 2 * PI / m, [x, y] = pol(cx, cy, r + (r2 - r) * 0.45, am); out.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${((r2 - r) * 0.18).toFixed(1)}"/>`); }
-    } else if (kind === "zig") {
-      const m = k * 2, pts = []; for (let i = 0; i < m * 2; i++) pts.push(pol(cx, cy, i % 2 === 0 ? r2 : r, off + i * PI / m));
-      out.push(`<path d="M${pts.map((p) => P(...p)).join(" L")}Z"/>`);
-    } else {
-      for (let i = 0; i < k; i++) {
-        const a0 = off + i * 2 * PI / k, a1 = a0 + 2 * PI / k, am = (a0 + a1) / 2;
+  const R = rng(seed * 7919 + 1), cx = W / 2, cy = 525, n = pick(R, [6, 8, 8, 10, 12, 12, 16, 18, 24]), out = [];
+  // centre
+  let r = 26;
+  const centre = pick(R, ["circle", "flower", "star", "eye"]);
+  if (centre === "circle") out.push(`<circle cx="${cx}" cy="${cy}" r="${r}"/><circle cx="${cx}" cy="${cy}" r="${(r * 0.45).toFixed(1)}"/>`);
+  else if (centre === "flower") { r = 38; for (let i = 0; i < 6; i++) out.push(petal(cx, cy, 8, r, i * PI / 3, 0.5)); out.push(`<circle cx="${cx}" cy="${cy}" r="9"/><circle cx="${cx}" cy="${cy}" r="${r}"/>`); }
+  else if (centre === "star") { r = 40; out.push(star(cx, cy, r, 0.45, pick(R, [5, 6, 8])), `<circle cx="${cx}" cy="${cy}" r="10"/>`, `<circle cx="${cx}" cy="${cy}" r="${r + 6}"/>`); r += 6; }
+  else { r = 34; out.push(`<circle cx="${cx}" cy="${cy}" r="${r}"/><circle cx="${cx}" cy="${cy}" r="20"/><circle cx="${cx}" cy="${cy}" r="8"/>`); }
+  const maxr = 372; let last = "";
+  while (r < maxr - 22) {
+    let kind; do kind = pick(R, RINGS); while (kind === last && R() < 0.85); last = kind;
+    const band = r < 200 ? uni(R, 34, 60) : uni(R, 40, 72), r2 = Math.min(maxr, r + band);
+    const k = r > 200 ? n * (n <= 12 ? pick(R, [1, 1, 2]) : 1) : r > 120 ? n : Math.min(n, r < 80 ? 8 : 12), off = pick(R, [0, PI / k]), step = 2 * PI / k, bw = r2 - r;
+    switch (kind) {
+      case "petal": for (let i = 0; i < k; i++) { const a = off + i * step; out.push(petal(cx, cy, r, r2, a, PI / k * 0.95)); if (band > 42) out.push(petal(cx, cy, r + bw * 0.18, r2 - bw * 0.28, a, PI / k * 0.45)); } break;
+      case "leaf2": for (let i = 0; i < k; i++) { const a = off + i * step; out.push(petal(cx, cy, r, r2, a - PI / k * 0.35, PI / k * 0.4), petal(cx, cy, r, r2, a + PI / k * 0.35, PI / k * 0.4)); } break;
+      case "dots": { const rr = bw / 2, m = Math.max(k, Math.floor(2 * PI * (r + rr) / (rr * 2.3)));
+        for (let i = 0; i < m; i++) { const [x, y] = pol(cx, cy, r + rr, off + i * 2 * PI / m); out.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(rr * 0.75).toFixed(1)}"/>`); if (rr > 14) out.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(rr * 0.32).toFixed(1)}"/>`); } break; }
+      case "beads": { const rr = bw / 2, m = Math.max(k, Math.floor(2 * PI * (r + rr) / (rr * 1.9))) & ~1;
+        for (let i = 0; i < m; i++) { const [x, y] = pol(cx, cy, r + rr, off + i * 2 * PI / m); out.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(rr * (i % 2 ? 0.4 : 0.8)).toFixed(1)}"/>`); } break; }
+      case "scallop": { const m = k * 2; let d = "";
+        for (let i = 0; i < m; i++) { const a0 = off + i * 2 * PI / m, a1 = a0 + 2 * PI / m, am = (a0 + a1) / 2; const [x0, y0] = pol(cx, cy, r, a0), [x1, y1] = pol(cx, cy, r, a1), c = pol(cx, cy, r2 + bw * 0.4, am); d += (i === 0 ? `M${P(x0, y0)} ` : "") + `Q${P(...c)} ${P(x1, y1)} `; }
+        out.push(`<path d="${d}Z"/>`);
+        for (let i = 0; i < m; i++) { const [x, y] = pol(cx, cy, r + bw * 0.45, off + (i + 0.5) * 2 * PI / m); out.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(bw * 0.18).toFixed(1)}"/>`); } break; }
+      case "zig": { const m = k * 2, pts = []; for (let i = 0; i < m * 2; i++) pts.push(pol(cx, cy, i % 2 === 0 ? r2 : r, off + i * PI / m)); out.push(`<path d="M${pts.map((q) => P(...q)).join(" L")}Z"/>`); break; }
+      case "lattice": { const m = k * 2, A = [], B = [];
+        for (let i = 0; i < m * 2; i++) { const a = off + i * PI / m; A.push(pol(cx, cy, i % 2 === 0 ? r2 : r, a)); B.push(pol(cx, cy, i % 2 === 0 ? r : r2, a)); }
+        out.push(`<path d="M${A.map((q) => P(...q)).join(" L")}Z"/>`, `<path d="M${B.map((q) => P(...q)).join(" L")}Z"/>`); break; }
+      case "teardots": for (let i = 0; i < k; i++) { const a = off + i * step; out.push(petal(cx, cy, r, r2 - bw * 0.22, a, PI / k * 0.6)); const [x, y] = pol(cx, cy, r2 - bw * 0.1, a); out.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${Math.min(bw * 0.12, PI * r2 / k * 0.35).toFixed(1)}"/>`); } break;
+      case "rays": for (let i = 0; i < k * 2; i++) { const a = off + i * step / 2, long = i % 2 === 0; out.push(petal(cx, cy, r, long ? r2 : r + bw * 0.6, a, PI / k * (long ? 0.28 : 0.2))); } break;
+      case "waves": { const m = k * 2; for (const [lo, hi] of [[r + bw * 0.1, r + bw * 0.55], [r + bw * 0.45, r2 - bw * 0.05]]) {
+        const pts = []; for (let i = 0; i <= 360; i++) { const a = off + i / 360 * 2 * PI; pts.push(pol(cx, cy, (lo + hi) / 2 + (hi - lo) / 2 * Math.sin(a * m), a)); }
+        out.push(`<path d="M${pts.map((q) => P(...q)).join(" L")}Z"/>`); } break; }
+      case "hearts": for (let i = 0; i < k; i++) { const a = off + i * step, [x, y] = pol(cx, cy, (r + r2) / 2, a); out.push(heart(x, y, Math.min(bw * 0.42, PI * (r + r2) / k * 0.42), a + PI / 2)); } break;
+      case "triangles": for (let i = 0; i < k; i++) { const a = off + i * step, w2 = PI / k * 0.9;
+        const T = (r0, r1, w) => `<path d="M${P(...pol(cx, cy, r0, a - w))} L${P(...pol(cx, cy, r1, a))} L${P(...pol(cx, cy, r0, a + w))}Z"/>`;
+        out.push(T(r, r2, w2), T(r + bw * 0.22, r2 - bw * 0.28, w2 * 0.45)); } break;
+      case "lotus": for (let i = 0; i < k; i++) { const a = off + i * step; out.push(petal(cx, cy, r, r2, a, PI / k * 1.05), petal(cx, cy, r, r2 - bw * 0.2, a, PI / k * 0.62), petal(cx, cy, r, r2 - bw * 0.42, a, PI / k * 0.25)); } break;
+      case "pinwheel": for (let i = 0; i < k; i++) { const a = off + i * step, [x0, y0] = pol(cx, cy, r, a), [x1, y1] = pol(cx, cy, r2, a + step * 0.55), c1 = pol(cx, cy, (r + r2) / 2, a - step * 0.15), c2 = pol(cx, cy, (r + r2) / 2, a + step * 0.75);
+        out.push(`<path d="M${P(x0, y0)} Q${P(...c1)} ${P(x1, y1)} Q${P(...c2)} ${P(...pol(cx, cy, r, a + step * 0.5))}Z"/>`); } break;
+      case "stars": { const m = Math.max(k, Math.floor(2 * PI * (r + bw / 2) / (bw * 1.15)));
+        for (let i = 0; i < m; i++) { const [x, y] = pol(cx, cy, r + bw / 2, off + i * 2 * PI / m); out.push(star(x, y, Math.min(bw * 0.45, PI * (r + bw / 2) / m * 0.9), 0.45, 5, off + i * 2 * PI / m)); } break; }
+      default: for (let i = 0; i < k; i++) { // arch
+        const a0 = off + i * step, a1 = a0 + step, am = (a0 + a1) / 2;
         const [x0, y0] = pol(cx, cy, r, a0 + 0.02), [x1, y1] = pol(cx, cy, r, a1 - 0.02), top = pol(cx, cy, r2, am), c0 = pol(cx, cy, r2, a0 + 0.05), c1 = pol(cx, cy, r2, a1 - 0.05);
-        out.push(`<path d="M${P(x0, y0)} C${P(...c0)} ${P(...top)} ${P(...top)} C${P(...top)} ${P(...c1)} ${P(x1, y1)}"/>`, petal(cx, cy, r + (r2 - r) * 0.15, r + (r2 - r) * 0.75, am, PI / k * 0.35));
-      }
+        out.push(`<path d="M${P(x0, y0)} C${P(...c0)} ${P(...top)} ${P(...top)} C${P(...top)} ${P(...c1)} ${P(x1, y1)}"/>`, petal(cx, cy, r + bw * 0.15, r + bw * 0.75, am, PI / k * 0.35)); }
     }
     out.push(`<circle cx="${cx}" cy="${cy}" r="${r2.toFixed(1)}"/>`); r = r2;
   }
-  for (const [x, y] of [[70, 70], [W - 70, 70], [70, H - 130], [W - 70, H - 130]]) { for (let i = 0; i < 6; i++) out.push(petal(x, y, 6, 46, i * PI / 3, 0.45)); out.push(`<circle cx="${x}" cy="${y}" r="7"/>`); }
+  // page frame
+  const frame = pick(R, ["corners", "corners", "border", "square", "sky", "halo"]);
+  if (frame === "corners") for (const [x, y] of [[70, 70], [W - 70, 70], [70, H - 130], [W - 70, H - 130]]) { for (let i = 0; i < 6; i++) out.push(petal(x, y, 6, 46, i * PI / 3, 0.45)); out.push(`<circle cx="${x}" cy="${y}" r="7"/>`); }
+  else if (frame === "border") { out.push(`<rect x="34" y="34" width="${W - 68}" height="${H - 116}" rx="22"/>`); for (const [x, y] of [[34, 34], [W - 34, 34], [34, H - 82], [W - 34, H - 82]]) out.push(`<circle cx="${x}" cy="${y}" r="16" fill="#fff"/>`); }
+  else if (frame === "square") { out.push(`<rect x="30" y="30" width="${W - 60}" height="${H - 108}"/>`, `<rect x="44" y="44" width="${W - 88}" height="${H - 136}"/>`); }
+  else if (frame === "sky") { const S2 = rng(seed); for (const [x, y] of [[90, 110], [W - 95, 140], [110, H - 180], [W - 100, H - 200], [W / 2, 95], [180, 300], [W - 170, 760]]) { const sx = x + uni(S2, -20, 20), sy = y + uni(S2, -20, 20), sr = uni(S2, 18, 30); if (Math.hypot(sx - cx, sy - cy) > maxr + sr + 30) out.push(star(sx, sy, sr, 0.45, 5)); } }
+  else { out.push(`<circle cx="${cx}" cy="${cy}" r="${maxr + 22}"/>`); const m = 48; for (let i = 0; i < m; i++) { const [x, y] = pol(cx, cy, maxr + 38, i * 2 * PI / m); out.push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7"/>`); } }
   return wrap(out.join(""), `Mandala No. ${seed}`);
 }
 
@@ -121,7 +155,7 @@ export function stars(seed) {   // a night sky: crescent moon, stars, planets an
 }
 
 export const STYLES = {
-  mandala: { name: "Mandalas", fn: mandala, blurb: "Calm, detailed, great for grown-ups" },
+  mandala: { name: "Mandalas", fn: mandala, blurb: "Calm, detailed, great for grown-ups. 17 ring patterns, every number different" },
   sakura: { name: "Cherry Blossoms", fn: sakura, blurb: "Branches full of flowers" },
   stars: { name: "Night Sky", fn: stars, blurb: "Moons, stars and planets, big shapes for little hands" },
   tiles: { name: "Maze Tiles", fn: tiles, blurb: "Bold curvy paths, quick to color" },

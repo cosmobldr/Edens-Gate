@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: "47 */3 * * *"
   workflow_dispatch:
+  push:                                   # also run right away when the sync itself changes
+    branches: [main]
+    paths: [scripts/sync_models.py, .github/workflows/sync-models.yml]
 permissions:
   contents: write
   actions: write

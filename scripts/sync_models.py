@@ -23,17 +23,28 @@ def get(url, tries=4):
             time.sleep(5 * (i + 1))
 
 
-def items():
-    q = urllib.parse.urlencode({"q": "identifier:openassetforge-*", "fl[]": "identifier", "rows": 500, "output": "json"})
-    docs = json.loads(get("https://archive.org/advancedsearch.php?" + q))["response"]["docs"]
-    return sorted(d["identifier"] for d in docs)
+# Collections we know exist. archive.org's search can take hours to list a brand-new item, so these are
+# always checked directly too. (New categories still get found by the search once it catches up.)
+KNOWN = ["openassetforge-artists-workshop", "openassetforge-creators-studio", "openassetforge-kitchen"]
+
+
+def items(old):
+    found = set(KNOWN) | {m["i"] for m in old["models"]}
+    try:
+        q = urllib.parse.urlencode({"q": "identifier:openassetforge-*", "fl[]": "identifier", "rows": 500, "output": "json"})
+        found |= {d["identifier"] for d in json.loads(get("https://archive.org/advancedsearch.php?" + q))["response"]["docs"]}
+    except Exception as e:
+        print("archive.org search didn't answer, checking the known collections only:", e)
+    return sorted(found)
 
 
 def main():
     old = json.load(open(OUT)) if os.path.exists(OUT) else {"models": []}
     models, cats = [], {}
-    for ident in items():
+    for ident in items(old):
         meta = json.loads(get(f"https://archive.org/metadata/{ident}"))
+        if not meta.get("files"):
+            continue          # not there (yet)
         title = (meta.get("metadata") or {}).get("title", "")
         cat = re.sub(r"^The Open Asset Forge · | \(free 3D models\)$", "", title) or ident
         files = {f["name"]: int(f.get("size") or 0) for f in meta.get("files", [])}

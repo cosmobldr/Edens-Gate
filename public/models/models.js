@@ -3,6 +3,8 @@ const $ = (id) => document.getElementById(id);
 const PAGE = 60;
 const MV = "/tools/vendor/model-viewer.min.js";
 const dl = (m, ext) => `https://archive.org/download/${m.i}/${encodeURIComponent(m.f + ext)}`;
+// the 3D view fetches the file from the page, which archive.org only allows through its /cors/ address
+const cors = (m, ext) => `https://archive.org/cors/${m.i}/${encodeURIComponent(m.f + ext)}`;
 const mb = (b) => (b >= 1e6 ? (b / 1e6).toFixed(b >= 1e7 ? 0 : 1) + " MB" : Math.max(1, Math.round(b / 1e3)) + " KB");
 const norm = (s) => s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9 ]/g, " ");
 
@@ -109,7 +111,7 @@ $("v-spin").onclick = async () => {
   if (current !== m) return;
   const box = $("v-3d"); box.textContent = "";
   const mv = document.createElement("model-viewer");
-  mv.setAttribute("src", dl(m, ".glb")); mv.setAttribute("camera-controls", ""); mv.setAttribute("auto-rotate", "");
+  mv.setAttribute("src", cors(m, ".glb")); mv.setAttribute("camera-controls", ""); mv.setAttribute("auto-rotate", "");
   mv.setAttribute("shadow-intensity", "0.8"); mv.setAttribute("exposure", "1"); mv.setAttribute("alt", `3D view of ${m.n}`);
   mv.setAttribute("touch-action", "pan-y"); mv.setAttribute("poster", dl(m, ".jpg"));
   mv.addEventListener("load", () => { $("v-spin").hidden = true; $("v-img").hidden = true; });

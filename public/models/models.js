@@ -114,7 +114,7 @@ $("v-spin").onclick = async () => {
   mv.setAttribute("src", cors(m, ".glb")); mv.setAttribute("camera-controls", ""); mv.setAttribute("auto-rotate", "");
   mv.setAttribute("shadow-intensity", "0.8"); mv.setAttribute("exposure", "1"); mv.setAttribute("alt", `3D view of ${m.n}`);
   mv.setAttribute("touch-action", "pan-y"); mv.setAttribute("poster", dl(m, ".jpg"));
-  mv.addEventListener("load", () => { $("v-spin").hidden = true; $("v-img").hidden = true; });
+  mv.addEventListener("load", () => { $("v-spin").hidden = true; });   // the photo stays underneath: it holds the frame's size
   mv.addEventListener("error", () => {
     const msg = document.createElement("div"); msg.className = "msg"; msg.textContent = "The 3D view couldn't load here, but the download works.";
     box.append(msg); $("v-spin").hidden = true;

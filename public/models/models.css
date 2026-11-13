@@ -88,7 +88,7 @@ main { max-width: 1280px; margin: 0 auto; padding: 18px clamp(16px, 3vw, 40px) 4
 .v-close { position: absolute; top: 10px; right: 10px; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line);
   background: var(--moss); color: var(--mist); font-size: 16px; cursor: pointer; }
 @media (max-width: 760px) {
-  .view[open] { grid-template-columns: 1fr; overflow-y: auto; }
+  .view[open] { grid-template-columns: 1fr; grid-auto-rows: max-content; overflow-y: auto; }
   .v-stage { aspect-ratio: 1; min-height: 0; }
   .v-info { padding: 20px 18px 22px; }
   .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }

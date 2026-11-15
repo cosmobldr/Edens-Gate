@@ -6,7 +6,7 @@ self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 self.addEventListener("fetch", (e) => {
   const req = e.request, u = new URL(req.url);
   if (req.method !== "GET" || u.origin !== location.origin) return;           // songs on archive.org are handled by the page
-  if (u.pathname.endsWith(".glb") || u.pathname.startsWith("/_vercel") || u.pathname.endsWith(".zip") || u.pathname.endsWith(".pdf")) return;
+  if (u.pathname.endsWith(".glb") || u.pathname.startsWith("/_vercel") || u.pathname.endsWith(".zip") || u.pathname.endsWith(".stl") || u.pathname.endsWith(".pdf")) return;
   e.respondWith(
     fetch(req).then((r) => {
       if (r.ok && r.type === "basic") { const copy = r.clone(); caches.open(SHELL).then((c) => c.put(req, copy)).catch(() => {}); }

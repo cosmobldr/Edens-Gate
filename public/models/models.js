@@ -29,7 +29,7 @@ function card(m) {
   const meta = document.createElement("div"); meta.className = "meta";
   const n = document.createElement("div"); n.className = "n"; n.textContent = m._g ? base(m.n) : m.n;
   const s = document.createElement("div"); s.className = "s";
-  if (m._g) { s.textContent = `${m._g.length} colors · GLB ${mb(m.g)} `; } else s.textContent = `${m.id} · GLB ${mb(m.g)}`;
+  s.append(m._g ? `${m._g.length} colors` : m.id, Object.assign(document.createElement("span"), { className: "sz", textContent: ` · GLB ${mb(m.g)}` }));
   meta.append(n, s); b.append(img, meta); li.append(b);
   b.onclick = () => open(m);
   return li;
@@ -174,7 +174,8 @@ new IntersectionObserver((e) => { if (e[0].isIntersecting && drawn < shown.lengt
   const p = new URL(location.href).searchParams;
   cat = data.categories.some((c) => c.name === p.get("c")) ? p.get("c") : "";
   q = p.get("q") || ""; $("q").value = q;
-  cats(data.categories); filter();
+  const cc = new Map(); for (const m of all) cc.set(m.c, (cc.get(m.c) || 0) + 1);
+  cats(data.categories.map((c) => ({ name: c.name, count: cc.get(c.name) || 0 }))); filter();
   const m = p.get("m") && every.find((x) => x.id === p.get("m"));
   if (m) open(m, false);
 })();

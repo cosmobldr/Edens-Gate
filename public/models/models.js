@@ -8,7 +8,10 @@ const cors = (m, ext) => `https://archive.org/cors/${m.i}/${encodeURIComponent(m
 const mb = (b) => (b >= 1e6 ? (b / 1e6).toFixed(b >= 1e7 ? 0 : 1) + " MB" : Math.max(1, Math.round(b / 1e3)) + " KB");
 const norm = (s) => s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9 ]/g, " ");
 
-let all = [], shown = [], drawn = 0, cat = "", q = "";
+let all = [], every = [], shown = [], drawn = 0, cat = "", q = "";
+// Colour variants share a name before the comma ("Spray paint can, teal"): they show as one card with swatches.
+const base = (n) => n.split(", ")[0];
+const label = (m) => (m.n.includes(", ") ? m.n.slice(m.n.indexOf(", ") + 2) : "original");
 
 // day / night, shared with the main Eden's Gate page
 $("mode").textContent = document.documentElement.dataset.theme === "day" ? "☾" : "☀";
@@ -24,8 +27,9 @@ function card(m) {
   const img = document.createElement("img"); img.loading = "lazy"; img.decoding = "async"; img.width = 360; img.height = 360;
   img.alt = ""; img.src = `/models/t/${m.id}.webp`;
   const meta = document.createElement("div"); meta.className = "meta";
-  const n = document.createElement("div"); n.className = "n"; n.textContent = m.n;
-  const s = document.createElement("div"); s.className = "s"; s.textContent = `${m.id} · GLB ${mb(m.g)}`;
+  const n = document.createElement("div"); n.className = "n"; n.textContent = m._g ? base(m.n) : m.n;
+  const s = document.createElement("div"); s.className = "s";
+  if (m._g) { s.textContent = `${m._g.length} colors · GLB ${mb(m.g)} `; } else s.textContent = `${m.id} · GLB ${mb(m.g)}`;
   meta.append(n, s); b.append(img, meta); li.append(b);
   b.onclick = () => open(m);
   return li;
@@ -72,15 +76,31 @@ function cats(list) {
 
 // ---- model view
 let current = null;
-function open(m, push = true) {
+function open(m, push = true, swap = false) {
   current = m;
   $("v-cat").textContent = m.c; $("v-name").textContent = m.n; $("v-id").textContent = m.id;
   $("v-img").src = dl(m, ".jpg"); $("v-img").alt = `Preview of ${m.n}`; $("v-img").hidden = false;
   $("v-3d").hidden = true; $("v-3d").textContent = ""; $("v-spin").hidden = false; $("v-spin").textContent = "View in 3D";
   $("v-glb").href = dl(m, ".glb"); $("v-glb-s").textContent = mb(m.g);
   $("v-blend").href = dl(m, ".blend"); $("v-blend-s").textContent = mb(m.b);
+  const vc = $("v-colors"), sw = vc.querySelector(".v-sw");
+  vc.hidden = !m._g;
+  if (m._g) {
+    vc.querySelector(".v-colors-t").innerHTML = "";
+    vc.querySelector(".v-colors-t").append(`${m._g.length} colors · `, Object.assign(document.createElement("b"), { textContent: label(m) }));
+    if (sw.dataset.group !== base(m.n) + m.c) {
+      sw.textContent = ""; sw.dataset.group = base(m.n) + m.c;
+      for (const v of m._g) {
+        const b = document.createElement("button"); b.type = "button"; b.title = label(v); b.setAttribute("aria-label", label(v)); b.dataset.id = v.id;
+        const im = document.createElement("img"); im.src = `/models/t/${v.id}.webp`; im.alt = ""; im.loading = "lazy"; b.append(im);
+        b.onclick = () => open(v, false, true);
+        sw.append(b);
+      }
+    }
+    for (const b of sw.children) b.setAttribute("aria-pressed", String(b.dataset.id === m.id));
+  }
   if (!$("view").open) $("view").showModal();
-  if (push) { const u = new URL(location.href); u.searchParams.set("m", m.id); history.pushState({ m: m.id }, "", u); }
+  if (push || swap) { const u = new URL(location.href); u.searchParams.set("m", m.id); history[swap ? "replaceState" : "pushState"]({ m: m.id }, "", u); }
   try { window.va?.("event", { name: "model-open", data: { id: m.id } }); } catch (e) {}
 }
 function close() {
@@ -95,7 +115,7 @@ $("v-close").onclick = close;
 $("view").addEventListener("click", (e) => { if (e.target === $("view")) close(); });
 addEventListener("popstate", () => {
   const id = new URL(location.href).searchParams.get("m");
-  const m = id && all.find((x) => x.id === id);
+  const m = id && every.find((x) => x.id === id);
   m ? open(m, false) : close();
 });
 
@@ -138,12 +158,23 @@ new IntersectionObserver((e) => { if (e[0].isIntersecting && drawn < shown.lengt
 (async () => {
   let data = { categories: [], models: [] };
   try { data = await (await fetch("/models.json", { cache: "no-cache" })).json(); } catch (e) {}
-  all = data.models.map((m) => ({ ...m, _s: norm(`${m.n} ${m.c} ${m.id}`) }));
-  $("count").textContent = all.length ? `Every one of these ${all.length.toLocaleString()} models` : "Every model";
+  every = data.models.map((m) => ({ ...m }));
+  const groups = new Map();
+  for (const m of every) { const k = m.c + "|" + base(m.n); groups.has(k) ? groups.get(k).push(m) : groups.set(k, [m]); }
+  all = [];
+  for (const g of groups.values()) {
+    g.sort((a, b) => (a.n.includes(", ") - b.n.includes(", ")) || a.id.localeCompare(b.id));
+    if (g.length > 1) for (const m of g) m._g = g;
+    const lead = g[0];
+    lead._s = norm(g.map((m) => `${m.n} ${m.id}`).join(" ") + " " + lead.c);
+    all.push(lead);
+  }
+  all.sort((a, b) => a.id.localeCompare(b.id));
+  $("count").textContent = every.length ? `Every one of these ${every.length.toLocaleString()} models` : "Every model";
   const p = new URL(location.href).searchParams;
   cat = data.categories.some((c) => c.name === p.get("c")) ? p.get("c") : "";
   q = p.get("q") || ""; $("q").value = q;
   cats(data.categories); filter();
-  const m = p.get("m") && all.find((x) => x.id === p.get("m"));
+  const m = p.get("m") && every.find((x) => x.id === p.get("m"));
   if (m) open(m, false);
 })();

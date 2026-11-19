@@ -41,8 +41,9 @@ function draw(reset) {
   for (const m of shown.slice(drawn, drawn + PAGE)) frag.append(card(m));
   drawn = Math.min(shown.length, drawn + PAGE);
   $("grid").append(frag);
+  const withColors = shown.reduce((n, m) => n + (m._g ? m._g.length : 1), 0);
   $("status").textContent = shown.length
-    ? `${shown.length.toLocaleString()} model${shown.length === 1 ? "" : "s"}${q ? ` matching “${q}”` : ""}${cat ? ` in ${cat}` : ""}`
+    ? `${shown.length.toLocaleString()} model${shown.length === 1 ? "" : "s"}${withColors > shown.length ? ` · ${withColors.toLocaleString()} including colors` : ""}${q ? ` matching “${q}”` : ""}${cat ? ` in ${cat}` : ""}`
     : "";
   if (!shown.length) {
     const li = document.createElement("li"); li.className = "empty";
@@ -63,15 +64,18 @@ function filter() {
 
 function cats(list) {
   const ul = $("cats"); ul.textContent = "";
-  const mk = (name, count) => {
+  const mk = (name, count, colors) => {
     const li = document.createElement("li"), b = document.createElement("button");
     b.type = "button"; b.setAttribute("aria-pressed", String(cat === name));
-    b.append(name || "Everything"); const s = document.createElement("small"); s.textContent = count.toLocaleString(); b.append(s);
+    b.append(name || "Everything"); const s = document.createElement("small");
+    s.textContent = count.toLocaleString() + (colors > count ? ` · ${colors.toLocaleString()}` : "");
+    if (colors > count) b.title = `${count.toLocaleString()} models, ${colors.toLocaleString()} including colors`;
+    b.append(s);
     b.onclick = () => { cat = name; cats(list); filter(); };
     li.append(b); ul.append(li);
   };
-  mk("", all.length);
-  for (const c of list) mk(c.name, c.count);
+  mk("", all.length, every.length);
+  for (const c of list) mk(c.name, c.count, c.colors);
 }
 
 // ---- model view
@@ -170,12 +174,16 @@ new IntersectionObserver((e) => { if (e[0].isIntersecting && drawn < shown.lengt
     all.push(lead);
   }
   all.sort((a, b) => a.id.localeCompare(b.id));
-  $("count").textContent = every.length ? `Every one of these ${every.length.toLocaleString()} models` : "Every model";
+  $("count").textContent = every.length
+    ? (every.length > all.length ? `Every one of these ${all.length.toLocaleString()} models (${every.length.toLocaleString()} including colors)` : `Every one of these ${every.length.toLocaleString()} models`)
+    : "Every model";
   const p = new URL(location.href).searchParams;
   cat = data.categories.some((c) => c.name === p.get("c")) ? p.get("c") : "";
   q = p.get("q") || ""; $("q").value = q;
-  const cc = new Map(); for (const m of all) cc.set(m.c, (cc.get(m.c) || 0) + 1);
-  cats(data.categories.map((c) => ({ name: c.name, count: cc.get(c.name) || 0 }))); filter();
+  const cc = new Map(), cv = new Map();
+  for (const m of all) cc.set(m.c, (cc.get(m.c) || 0) + 1);
+  for (const m of every) cv.set(m.c, (cv.get(m.c) || 0) + 1);
+  cats(data.categories.map((c) => ({ name: c.name, count: cc.get(c.name) || 0, colors: cv.get(c.name) || 0 }))); filter();
   const m = p.get("m") && every.find((x) => x.id === p.get("m"));
   if (m) open(m, false);
 })();

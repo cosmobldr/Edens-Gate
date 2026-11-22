@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   push:                                   # also run right away when the sync itself changes
     branches: [main]
-    paths: [scripts/sync_models.py, .github/workflows/sync-models.yml]
+    paths: [scripts/sync_models.py, scripts/build_seo.py, .github/workflows/sync-models.yml]
 permissions:
   contents: write
   actions: write
@@ -20,6 +20,7 @@ jobs:
       - uses: actions/checkout@v5
       - run: pip install -q pillow
       - run: python scripts/sync_models.py
+      - run: python scripts/build_seo.py      # a Google-readable page per model + sitemap
       - name: Save changes
         run: |
           if [ -n "$(git status --porcelain public)" ]; then

@@ -3,7 +3,7 @@
 name: Sync 3D models from archive.org
 on:
   schedule:
-    - cron: "47 */3 * * *"
+    - cron: "23 * * * *"     # hourly: GitHub skips many scheduled runs, so ask often
   workflow_dispatch:
   push:                                   # also run right away when the sync itself changes
     branches: [main]

@@ -25,7 +25,7 @@ def get(url, tries=4):
 
 # Collections we know exist. archive.org's search can take hours to list a brand-new item, so these are
 # always checked directly too. (New categories still get found by the search once it catches up.)
-# Last manual run: 2026-11-26 (catch up ~400)
+# Last manual run: 2026-11-26 afternoon
 KNOWN = ["openassetforge-artists-workshop", "openassetforge-city-and-public-space", "openassetforge-creators-studio",
          "openassetforge-kitchen", "openassetforge-modern-apartment"]
 

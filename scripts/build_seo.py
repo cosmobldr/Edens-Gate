@@ -180,7 +180,7 @@ def main():
         cat_urls.append(url)
 
     # the main pages people should land on, plus every tool page that exists
-    static = [f"{SITE}/", f"{SITE}/models/", f"{SITE}/coloring/", f"{SITE}/tools/"]
+    static = [f"{SITE}/", f"{SITE}/models/", f"{SITE}/teachers/", f"{SITE}/coloring/", f"{SITE}/tools/"]
     tools = os.path.join(ROOT, "tools")
     for d in sorted(os.listdir(tools)):
         if os.path.isfile(os.path.join(tools, d, "index.html")):

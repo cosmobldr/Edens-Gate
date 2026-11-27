@@ -80,8 +80,18 @@ def tile(href, img, name, sub):
             f'<b>{e(name)}</b><small>{e(sub)}</small></a></li>')
 
 
+def cat_order():
+    try:
+        c = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "categories.json"), encoding="utf-8"))
+        return {n: i for i, n in enumerate(c["categories"])}
+    except Exception:
+        return {}
+
+
 def main():
     data = json.load(open(os.path.join(ROOT, "models.json"), encoding="utf-8"))
+    order = cat_order()
+    ordered = lambda cs: sorted(cs, key=lambda c: (order.get(c, 99), c))
     models = data["models"]
     groups = {}
     for m in models:
@@ -155,7 +165,7 @@ def main():
         urls.append(url)
 
     cat_urls = []
-    for c, keys in sorted(by_cat.items()):
+    for c, keys in [(c, by_cat[c]) for c in ordered(by_cat)]:
         url = f"{SITE}/models/category/{slug(c)}/"
         n = sum(len(groups[k]) for k in keys)
         title = f"Free {c} 3D models: {len(keys)} CC0 GLB + Blender assets | Eden's Gate"
@@ -166,7 +176,7 @@ def main():
               "mainEntity": {"@type": "ItemList", "numberOfItems": len(keys), "itemListElement": [
                   {"@type": "ListItem", "position": i + 1, "url": f"{SITE}/models/free/{slugs[k]}/", "name": k[1]}
                   for i, k in enumerate(keys)]}}
-        others = " · ".join(f'<a href="/models/category/{slug(o)}/">{e(o)}</a>' for o in sorted(by_cat) if o != c)
+        others = " · ".join(f'<a href="/models/category/{slug(o)}/">{e(o)}</a>' for o in ordered(by_cat) if o != c)
         body = [f'<main class="sp">', f'<p class="sp-crumbs"><a href="/models/">Free 3D models</a> / {e(c)}</p>',
                 f'<h1>Free {e(c.lower())} 3D models</h1>',
                 f'<p class="sp-lede">{len(keys)} free models, every one a GLB for game engines and the web plus its original Blender file. '
@@ -197,7 +207,7 @@ def main():
     idx = os.path.join(ROOT, "models", "index.html")
     s = open(idx, encoding="utf-8").read()
     nav = ('<nav class="sp-browse" aria-label="Browse free 3D models by category"><span>Browse by category:</span> '
-           + " · ".join(f'<a href="/models/category/{slug(c)}/">{e(c)} ({len(by_cat[c])})</a>' for c in sorted(by_cat)) + "</nav>")
+           + " · ".join(f'<a href="/models/category/{slug(c)}/">{e(c)} ({len(by_cat[c])})</a>' for c in ordered(by_cat)) + "</nav>")
     s = re.sub(r'<nav class="sp-browse".*?</nav>', nav, s, flags=re.S) if 'class="sp-browse"' in s else s.replace("</main>", nav + "\n</main>", 1)
     s = re.sub(r'<meta property="og:description" content="[^"]*">',
                f'<meta property="og:description" content="{len(models):,} free 3D models. GLB + Blender. Public domain (CC0): use them for anything.">', s)

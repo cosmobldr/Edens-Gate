@@ -60,5 +60,57 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/models/category/kitchen/",
+      "destination": "/models/category/kitchen-and-dining/",
+      "permanent": true
+    },
+    {
+      "source": "/models/category/kitchen",
+      "destination": "/models/category/kitchen-and-dining/",
+      "permanent": true
+    },
+    {
+      "source": "/models/category/modern-apartment/",
+      "destination": "/models/category/home-and-living/",
+      "permanent": true
+    },
+    {
+      "source": "/models/category/modern-apartment",
+      "destination": "/models/category/home-and-living/",
+      "permanent": true
+    },
+    {
+      "source": "/models/category/artists-workshop/",
+      "destination": "/models/category/workshop-and-power-tools/",
+      "permanent": true
+    },
+    {
+      "source": "/models/category/artists-workshop",
+      "destination": "/models/category/workshop-and-power-tools/",
+      "permanent": true
+    },
+    {
+      "source": "/models/category/city-and-public-space/",
+      "destination": "/models/category/city-and-street/",
+      "permanent": true
+    },
+    {
+      "source": "/models/category/city-and-public-space",
+      "destination": "/models/category/city-and-street/",
+      "permanent": true
+    },
+    {
+      "source": "/models/category/creators-studio/",
+      "destination": "/models/category/music-and-audio/",
+      "permanent": true
+    },
+    {
+      "source": "/models/category/creators-studio",
+      "destination": "/models/category/music-and-audio/",
+      "permanent": true
+    }
   ]
 }

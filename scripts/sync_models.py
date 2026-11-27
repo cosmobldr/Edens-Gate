@@ -40,6 +40,28 @@ def items(old):
     return sorted(found)
 
 
+# Website categories (14) live in scripts/categories.json, keyed by the model's name before the first comma.
+# Files and IDs never move on archive.org; a new name not in the list yet falls back by its collection.
+CATS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "categories.json")
+
+
+def categorize(models):
+    c = json.load(open(CATS, encoding="utf-8"))
+    unsorted = set()
+    for m in models:
+        name = m["n"].split(", ")[0]
+        m["c"] = c["objects"].get(name) or c["fallback"].get(m["i"]) or m["c"]
+        if name not in c["objects"]:
+            unsorted.add(name)
+    if unsorted:
+        print(f"{len(unsorted)} new names not sorted yet (using the fallback):", ", ".join(sorted(unsorted)[:40]))
+    counts = {}
+    for m in models:
+        counts[m["c"]] = counts.get(m["c"], 0) + 1
+    order = {n: i for i, n in enumerate(c["categories"])}
+    return [{"name": k, "count": v} for k, v in sorted(counts.items(), key=lambda kv: (order.get(kv[0], 99), kv[0]))]
+
+
 def main():
     old = json.load(open(OUT)) if os.path.exists(OUT) else {"models": []}
     models, cats = [], {}
@@ -81,10 +103,10 @@ def main():
     for f in os.listdir(THUMBS):
         if f.endswith(".webp") and f not in keep:
             os.remove(os.path.join(THUMBS, f))
-    data = {"v": 1, "categories": [{"name": k, "count": v} for k, v in sorted(cats.items())], "models": models}
+    data = {"v": 1, "categories": categorize(models), "models": models}
     if data != old:
         json.dump(data, open(OUT, "w"), separators=(",", ":"))
-    print(f"{len(models)} models in {len(cats)} categories, {made} new thumbnails, {gone} removed")
+    print(f"{len(models)} models in {len(data['categories'])} categories, {made} new thumbnails, {gone} removed")
 
 
 if __name__ == "__main__":

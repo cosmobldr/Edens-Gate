@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   push:                                   # also run right away when the sync itself changes
     branches: [main]
-    paths: [scripts/sync_models.py, scripts/build_seo.py, .github/workflows/sync-models.yml]
+    paths: [scripts/sync_models.py, scripts/build_seo.py, scripts/categories.json, .github/workflows/sync-models.yml]
 permissions:
   contents: write
   actions: write
